@@ -16,8 +16,8 @@
 
 Code to assert that the pattern a<-distance->b is 27-recurrent
 
-compilation : g++ -O3 -march=native -flto -g -o pattern_recurrence pattern_recurrence.cpp
-execution   : ./pattern_recurrence
+compilation : g++ -O3 -march=native -flto -g -o lemma_A.o lemma_A.cpp
+execution   : ./lemma_A.o
 
 
 */

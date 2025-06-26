@@ -4,8 +4,8 @@
 
 Code to assert that for a fiven pair of integers (p, q), there is no infinite ternary square-free word that is square-free modulo p and q 
 
-compilation : g++ -O3 -march=native -flto -g -o simple_backtrack simple_backtrack.cpp
-execution   : ./simple_backtrack
+compilation : g++ -O3 -march=native -flto -g -o table_D_red.o table_D_red.cpp
+execution   : ./table_D_red.o
 
 
 */
@@ -85,6 +85,7 @@ void search(const int p, const int q){
 
 	Notice that, up to permutations of letters, it is enough to consider words starting with 01
 	*/
+    std::cout << "\nThe search for p = " << p << ", q = " << q << " started" << std::endl;
     std::string s = "01";       // Init of the string
     std::stack<char> stack;  	// Stack to emulate a DFS
     // Push on the stack depends on the alphabet : 
@@ -94,7 +95,7 @@ void search(const int p, const int q){
     stack.push('0');
     // While there exists extensions, i.e. the stack is not empty
     while(!stack.empty()){ 
-    	std::cout << s << std::endl;
+    	//std::cout << s << std::endl;
     	// if the top of the stack is a p, then we checked all the extensions of the current string so we pop_back it 
         if(stack.top() == 'p'){
             stack.pop();
@@ -123,11 +124,13 @@ void search(const int p, const int q){
 } 
 
 
-int main() {
-    testCheckSquareFreeAtEnd();
-    testCheckSquareFreeAtEndV2();
-    int p = 3;
-    int q = 4;
+int main(int argc, char* argv[]) {
+     if (argc != 3) {
+        std::cerr << "Usage: " << argv[0] << " <int1> <int2>\n";
+        return 1;
+    }
+    int p = std::stoi(argv[1]);
+    int q = std::stoi(argv[2]);
    	search(p, q);
     return 0;
 }

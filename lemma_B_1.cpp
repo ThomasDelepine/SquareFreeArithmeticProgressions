@@ -16,8 +16,8 @@
 
 Code to assert that !a<-distance->!b is 6-recurrent
 
-compilation : g++ -O3 -march=native -flto -g -o lemma_B_1 lemma_B_1.cpp
-execution   : ./lemma_B_1
+compilation : g++ -O3 -march=native -flto -g -o lemma_B_1.o lemma_B_1.cpp
+execution   : ./lemma_B_1.o
 
 
 */

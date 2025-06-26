@@ -15,8 +15,8 @@
 
 Code to assert that the bad patterns are 20-constructible
 
-compilation : g++ -O3 -march=native -flto -g -o exec file.cpp
-execution   : ./exec
+compilation : g++ -O3 -march=native -flto -g -o lemma_C.o lemma_C.cpp
+execution   : ./lemma_C.o
 
 
 */

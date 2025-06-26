@@ -16,8 +16,8 @@
 
 Code to assert that the pattern !a<-distance->b<-distance->!c is 27-recurrent
 
-compilation : g++ -O3 -march=native -flto -g -o lemma_B_2 lemma_B_2.cpp
-execution   : ./lemma_B_2
+compilation : g++ -O3 -march=native -flto -g -o lemma_B_2.o lemma_B_2.cpp
+execution   : ./lemma_B_2.o
 
 
 */
