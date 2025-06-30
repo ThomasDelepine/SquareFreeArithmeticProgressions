@@ -24,19 +24,20 @@ execution   : ./table_D_red.o
 #include <iomanip>
 #include <utility>
 
+#define SIZE 1000000
 
-bool checkSquareFreeAtEnd(const std::string& s){
+
+bool checkSquareFreeAtEnd(const int (&s)[SIZE], const int& size){
     /*
         Assumes s.pop_back() is square free
         Return true iff s is square free
     */ 
-    int n = s.size();
-    for(int i = 1; i <= n/2; i++){
+    for(int i = 1; i <= size/2; i++){
         // Checks if there is a square of period i at the end of s
         bool flag = true;
         for(int j = 0; j < i; j++){
             // certificate that s does not end with a square of period i
-            if(s[n - 1 - j] != s[n - 1 - i - j]){
+            if(s[size - 1 - j] != s[size - 1 - i - j]){
                 flag = false;
                 break;
             }
@@ -48,23 +49,22 @@ bool checkSquareFreeAtEnd(const std::string& s){
     return true;
 }
 
-bool checkSquareFreeAtEndV2(const std::string& s, const int p){
+bool checkSquareFreeAtEndV2(const int (&s)[SIZE], const int& size, const int& p){
     /*
         Assumes s.pop_back()_p is square free and p >= 1
         Return true iff s_p is square free
         where w_p is the word w0wpw2p...
     */ 
-    int n = s.size();
     // if the new symbol is not at a position k*p, then we don't need to check anything 
-    if((n-1)%p != 0){
+    if((size-1)%p != 0){
         return true;
     }
-    for(int i = 1; i <= (n+p+1)/p/2; i++){
+    for(int i = 1; i <= (size+p+1)/p/2; i++){
         // Checks if there is a square of period i at the end of s
         bool flag = true;
         for(int j = 0; j < i; j++){
             // certificate that s does not end with a square of period i
-            if(s[n - 1 - p*j] != s[n - 1 - p*i - p*j]){
+            if(s[size - 1 - p*j] != s[size - 1 - p*i - p*j]){
                 flag = false;
                 break;
             }
@@ -77,46 +77,56 @@ bool checkSquareFreeAtEndV2(const std::string& s, const int p){
 }
 
 
-void search(const int p, const int q){
-	/*
-	Tries to construct the largerst possible ternary word that is square-free, square-free modulo p and square-free modulo q
+void print(const int (&s)[SIZE], const int& size){
+    for(int i = 0; i < size; i++)
+        std::cout << s[i];
+    std::cout << " " << size << std::endl;
+}
 
-	The search algorithm is a dfs-like exploring words following the lexicographic ordering
+void search(const int& p, const int& q){
+    /*
+    Tries to construct the largerst possible ternary word that is square-free, square-free modulo p and square-free modulo q
 
-	Notice that, up to permutations of letters, it is enough to consider words starting with 01
-	*/
+    The search algorithm is a dfs-like exploring words following the lexicographic ordering
+
+    Notice that, up to permutations of letters, it is enough to consider words starting with 01
+    */
     std::cout << "\nThe search for p = " << p << ", q = " << q << " started" << std::endl;
-    std::string s = "01";       // Init of the string
-    std::stack<char> stack;  	// Stack to emulate a DFS
+    int s[SIZE];       // Init of the string
+    s[0] = 0;
+    s[1] = 1;
+    int size = 2;
+    std::stack<int> stack;      // Stack to emulate a DFS
     // Push on the stack depends on the alphabet : 
-    stack.push('p');			
-    stack.push('2'); 
-    stack.push('1');                
-    stack.push('0');
+    stack.push(3);          
+    stack.push(2); 
+    stack.push(1);                
+    stack.push(0);
     // While there exists extensions, i.e. the stack is not empty
-    while(!stack.empty()){ 
-    	//std::cout << s << std::endl;
-    	// if the top of the stack is a p, then we checked all the extensions of the current string so we pop_back it 
-        if(stack.top() == 'p'){
+    while(!stack.empty()){
+        //std::cout << s << std::endl;
+        // if the top of the stack is a p, then we checked all the extensions of the current string so we pop_back it 
+        if(stack.top() == 3){
             stack.pop();
-            s.pop_back();
+            size--;
         }
         // Otherwise, we try a new extension
         else{        
-            s = s + stack.top();
+            s[size] = stack.top();
+            size++;
             stack.pop();
             // Check conditions 
-            if(checkSquareFreeAtEnd(s) && checkSquareFreeAtEndV2(s, p) && checkSquareFreeAtEndV2(s, q)){  
+            if(checkSquareFreeAtEnd(s, size) && checkSquareFreeAtEndV2(s, size, p) && checkSquareFreeAtEndV2(s, size, q)){  
                 // If true, then we can extend s
-                stack.push('p');
-                stack.push('2'); 
-                stack.push('1');                
-                stack.push('0');
+                stack.push(3);
+                stack.push(2); 
+                stack.push(1);                
+                stack.push(0);
                 
             }
             else{               
-            	// otherwise we backtrack
-                s.pop_back();
+                // otherwise we backtrack
+                size--;
             }
         }
     }
@@ -131,6 +141,6 @@ int main(int argc, char* argv[]) {
     }
     int p = std::stoi(argv[1]);
     int q = std::stoi(argv[2]);
-   	search(p, q);
+    search(p, q);
     return 0;
 }

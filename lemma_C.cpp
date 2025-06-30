@@ -24,7 +24,7 @@ execution   : ./lemma_C.o
 void has_motif_notA_delta_B_delta_notC(const std::string s, const int a, const int b, const int c, const int distance){
 	for(int i = 0; i < s.size()-2*distance; i++){
 		if(s[i] != a && s[i + distance] == b && s[i + 2*distance] != c){
-			std::cout << i << std::endl;
+			std::cout << s << " contains the pattern !" << a << "<-" << distance << "->" << b << "<-" << distance << "->!" << c << " at position " << i << std::endl;
 			return;
 		}
 	}
