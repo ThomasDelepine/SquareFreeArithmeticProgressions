@@ -94,12 +94,7 @@ void search(const int p, const int q){
     stack.push('1');                
     stack.push('0');
     // While there exists extensions, i.e. the stack is not empty
-    int cpt = 0;
     while(!stack.empty()){
-        cpt++;
-        if(cpt%1 == 0){
-            std::cout << s << "           " << s.size() << std::endl;
-        } 
     	// std::cout << s << std::endl;
     	// if the top of the stack is a p, then we checked all the extensions of the current string so we pop_back it 
         if(stack.top() == 'p'){

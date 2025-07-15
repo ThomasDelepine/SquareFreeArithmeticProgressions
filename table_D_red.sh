@@ -18,7 +18,6 @@ pairs=(
     "4 10"      # terminates
     #"5 8"       # stuck at about 1250
     "6 7"       # terminates
-    #"9 15"      # stuck at about 9500
 )
 
 # loop over the pairs

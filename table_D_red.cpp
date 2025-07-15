@@ -32,12 +32,12 @@ bool checkSquareFreeAtEnd(const int (&s)[SIZE], const int& size){
         Assumes s.pop_back() is square free
         Return true iff s is square free
     */ 
-    for(int i = 1; i <= size/2; i++){
-        // Checks if there is a square of period i at the end of s
+    for(int period = 1; period <= size/2; period++){
+        // Checks if there is a square of period period at the end of s
         bool flag = true;
-        for(int j = 0; j < i; j++){
-            // certificate that s does not end with a square of period i
-            if(s[size - 1 - j] != s[size - 1 - i - j]){
+        for(int j = 0; j < period; j++){
+            // certificate that s does not end with a square of period period
+            if(s[size - 1 - j] != s[size - 1 - period - j]){
                 flag = false;
                 break;
             }
@@ -135,7 +135,7 @@ void search(const int& p, const int& q){
 
 
 int main(int argc, char* argv[]) {
-     if (argc != 3) {
+    if (argc != 3) {
         std::cerr << "Usage: " << argv[0] << " <int1> <int2>\n";
         return 1;
     }

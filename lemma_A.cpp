@@ -29,7 +29,7 @@ execution   : ./lemma_A.o
 		h26(2) = 20102101210212010210120102
 */
 
-bool checkSquareFreeAtEnd(std::string s, int l){
+bool checkSquareFreeAtEnd(std::string& s, int l){
     /*
     Assume that s = uv with u square free and |v| = l, return true iff s is square free
     */
@@ -89,7 +89,7 @@ std::pair<bool, int> has_two_patterns(const std::string& s, const char a, const 
 	return std::pair<bool, int>(false, -1);
 }
 
-void max_distance_between_patterns(const char a, const char b, int distance, std::set<std::string> factors){
+void max_distance_between_patterns(const char a, const char b, int distance, std::set<std::string>& factors){
 	/*
 	Returns the maximum distance between the two left-most patterns a<-distance->b amongst every factor in factors
 
