@@ -14,7 +14,9 @@
 
 /*
 
-Code to assert that the pattern a<-distance->b is 27-recurrent
+Code to assert that 
+	the pattern a⋄^(d)b is (27, h26)-recurrent for d in {1, 2, 3, 5, 6, 7, 8}
+	the pattern ab is (13, h26)-recurrent for a != b
 
 compilation : g++ -O3 -march=native -flto -g -o lemma_A.o lemma_A.cpp
 execution   : ./lemma_A.o
@@ -117,7 +119,7 @@ void max_distance_between_patterns(const char a, const char b, int distance, std
 			}
 		}
 	}
-	std::cout << "For the pattern " << a << "<--" << std::to_string(distance) << "-->" << b << ", the largest distance is " << std::to_string(largest) << " reached for the factor" << std::endl;
+	std::cout << "For the pattern " << a << "<--" << std::to_string(distance) << "-->" << b << ", the largest distance is " << std::to_string(largest) << std::endl;
 }
 
 void all_factors(const std::string& s, const int size, std::set<std::string>& acc){
@@ -194,17 +196,20 @@ std::set<std::string> images_of_h26(const int size_for_factors, const int number
 }
 
 int main() {
+	std::cout << "every integer should be at most 28" << std::endl;
+	std::set<std::string> images_of_h26_set = images_of_h26(200, 9);
 	for(char a : {'0', '1', '2'}){
 		for(char b : {'0', '1', '2'}){
 			for(const int distance : {2,3,5,6,7,8,9}){
-				max_distance_between_patterns(a, b, distance, images_of_h26(200, 9));
+				max_distance_between_patterns(a, b, distance, images_of_h26_set);
 			}
 		}
 	}
+	std::cout << "every distance should be at most 14" << std::endl;
 	for(char a : {'0', '1', '2'}){
 		for(char b : {'0', '1', '2'}){
 			if(a != b){
-				max_distance_between_patterns(a, b, 1, images_of_h26(200, 9));
+				max_distance_between_patterns(a, b, 1, images_of_h26_set);
 			}
 		}
 	}	

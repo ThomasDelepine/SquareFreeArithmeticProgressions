@@ -1,5 +1,3 @@
-
-
 /*
 
 Code to assert that for a fiven pair of integers (p, q), there is no infinite ternary square-free word that is square-free modulo p and q 
@@ -31,21 +29,13 @@ execution   : ./table_D_red.o
 
 #define P 8
 #define Q 5
-#define FAC_SIZE 40                         // should be the lcm of P and Q
+#define FAC_SIZE 40                         // should be the gcm of P and Q
 #define SIZE 40000                   
 #define EXTENDABILITY_LENGTH 80            // should be a multiple of FAC_SIZE
 #define BLOCK_EXTENDABILITY_LENGTH 200      // should be a multiple of FAC_SIZE
 #define LARGE_WORDS 240                     // length of large words
 
 std::chrono::time_point<std::chrono::_V2::system_clock, std::chrono::duration<long int, std::ratio<1, 1000000000>>> start; 
-std::vector<std::vector<int>>squaresEndP(2000, std::vector<int>(2000, 0));
-std::vector<std::vector<int>>squaresEndQ(2000, std::vector<int>(2000, 0));
-std::vector<int>squaresEndPath(2000, 0);
-std::vector<std::vector<int>>squaresBegP(2000, std::vector<int>(2000, 0));
-std::vector<std::vector<int>>squaresBegQ(2000, std::vector<int>(2000, 0));
-std::vector<int>squaresBegPath(2000, 0);
-std::vector<int> histo_length_right(4000, 0);
-std::vector<int> histo_length_left(4000, 0);
 
 std::string getSubsequence(const std::string& s, const int& p){
     std::string res = "";
@@ -107,59 +97,7 @@ bool checkSquareFreeAtEndString(const std::string& s){
     return true;
 }
 
-bool checkSquareFreeAtEndVector(const std::deque<int>& s, const bool verbose=false){
-    /*
-        Assumes s.pop_back() is square free
-        Return true iff s is square free
-    */ 
-    int n = s.size();
-    if(n <= 1) return true;
-    for(int i = 1; i <= n/2; i++){
-        // Checks if there is a square of period i at the end of s
-        bool flag = true;
-        for(int j = 0; j < i; j++){
-            // certificate that s does not end with a square of period i
-            if(s[n - 1 - j] != s[n - 1 - i - j]){
-                flag = false;
-                break;
-            }
-        } 
-        // If we just detected a square
-        if(flag){
-            if(verbose){squaresEndPath[i]++;}
-            return false;
-        }
-    }
-    return true;
-}
-
-bool checkSquareFreeAtBegVector(const std::deque<int>& s, const bool verbose=false){
-    /*
-        Assumes s.pop_front() is square free
-        Return true iff s is square free
-    */ 
-    int n = s.size();
-    if(n <= 1) return true;
-    for(int i = 1; i <= n/2; i++){
-        // Checks if there is a square of period i at the beginning of s
-        bool flag = true;
-        for(int j = 0; j < i; j++){
-            // certificate that s does not start with a square of period i
-            if(s[j] != s[i + j]){
-                flag = false;
-                break;
-            }
-        } 
-        // If we just detected a square
-        if(flag){
-            if(verbose){squaresBegPath[i]++;}
-            return false;
-        }
-    }
-    return true;
-}
-
-bool checkSquareFreeAtEndV2String(const std::string& s, const int p){
+bool checkSquareFreeAtEndV2String(const std::string& s, const int& p){
     /*
         Assumes s.pop_back()_p is square free and p >= 1
         Return true iff s_p is square free
@@ -170,7 +108,7 @@ bool checkSquareFreeAtEndV2String(const std::string& s, const int p){
     if((n-1)%p != 0){
         return true;
     }
-    for(int i = 1; i <= (n+p-1)/(2*p); i++){
+    for(int i = 1; i <= (n+p+1)/p/2; i++){
         // Checks if there is a square of period i at the end of s
         bool flag = true;
         for(int j = 0; j < i; j++){
@@ -187,7 +125,7 @@ bool checkSquareFreeAtEndV2String(const std::string& s, const int p){
     return true;
 }
 
-bool checkSquareFreeAtEndSuffixString(const std::string& s, const int length){
+bool checkSquareFreeAtEndSuffixString(const std::string& s, const int& length){
     /*
     s = wu with |u| = length, and w and u are square-free. Is wu square-free ?
     */
@@ -211,7 +149,7 @@ bool checkSquareFreeAtEndSuffixString(const std::string& s, const int length){
     return true;
 }
 
-bool checkSquareFreeAtEndV2SuffixString(const std::string& s, const int p, const int length, const bool verbose=false){
+bool checkSquareFreeAtEndV2SuffixString(const std::string& s, const int& p, const int& length){
     /*
     s = wu with |u| = length, and w and u are square-free. Is wu square-free mod p ?
     also p devides |w| and |u|
@@ -233,10 +171,6 @@ bool checkSquareFreeAtEndV2SuffixString(const std::string& s, const int p, const
                 }
             }
             if(flag){
-                if(verbose){
-                    if(p == P){squaresEndP[period][end]++;}
-                    if(p == Q){squaresEndQ[period][end]++;}
-                }
                 return false;
             }
         }
@@ -244,37 +178,7 @@ bool checkSquareFreeAtEndV2SuffixString(const std::string& s, const int p, const
     return true;
 }
 
-bool checkSquareFreeForcedPositionsEnd(const std::string& s, const int p, const int length, const std::vector<std::pair<int, int>>& ForcedPositions){
-    /*
-    s = wu with |u| = length, and w and u are square-free. 
-    check if some subwords of s are square-free
-    */
-    int n = s.size();
-    if(n <= length || (n)%p != 0){
-        return true;
-    }
-    // For each asked subwords:
-    for(const auto e : ForcedPositions){
-        int period = e.first;
-        int end = e.second;
-        // We check whether the word of length 2*period that ends at position end is a square
-        bool flag = true;
-        for(int i = 0; i < period; i++){
-            if(s[n - length + end + p - 2*period*p + i*p] != s[n - length + end + p - period*p + i*p]){
-                flag = false;
-                break;
-            }
-        }
-        if(flag){
-            if(p == P){squaresEndP[period][end]++;}
-            if(p == Q){squaresEndQ[period][end]++;}
-            return false;
-        }
-    }
-    return true;
-}
-
-bool checkSquareFreeAtBegV2SuffixString(const std::string& s, const int p, const int length, const bool verbose = false){
+bool checkSquareFreeAtBegV2SuffixString(const std::string& s, const int& p, const int& length){
     /*
     s = uw with |u| = length, and w and u are square-free. Is uw square-free mod p ?
     also p devides |w| and |u|
@@ -296,10 +200,6 @@ bool checkSquareFreeAtBegV2SuffixString(const std::string& s, const int p, const
                 }
             }
             if(flag){
-                if(verbose){
-                    if(p == P){squaresBegP[period][end]++;}
-                    if(p == Q){squaresBegQ[period][end]++;}
-                }
                 return false;
             }
         }
@@ -307,31 +207,6 @@ bool checkSquareFreeAtBegV2SuffixString(const std::string& s, const int p, const
     return true;
 }
 
-bool checkSquareFreeForcedPositionsBeg(const std::string& s, const int p, const int length, const std::vector<std::pair<int, int>>& ForcedPositions){
-        int n = s.size();
-    if(n <= length || (n)%p != 0){
-        return true;
-    }
-    // For each asked subwords:
-    for(const auto e : ForcedPositions){
-        int period = e.first;
-        int end = e.second;
-        // We check whether the word of length 2*period that ends at position end is a square
-        bool flag = true;
-        for(int i = 0; i < period; i++){
-            if(s[length - end - p + period*p + i*p] != s[length - end - p + i*p]){
-                flag = false;
-                break;
-            }
-        }
-        if(flag){
-            if(p == P){squaresBegP[period][end]++;}
-            if(p == Q){squaresBegQ[period][end]++;}
-            return false;
-        }
-    }
-    return true;
-}
 
 bool is_left_extandable(const std::string& w){
     /*
@@ -506,34 +381,62 @@ std::vector<std::string> all_permutations(const std::string& s){
 
     returns its 6 equivalents words (starting with 01, 02, 10, 12, 20, 21) 
     */
-    std::vector<std::vector<char>> permutations = {{'0', '1', '2'}, {'0', '2', '1'}, {'1', '0', '2'}, {'1', '2', '0'}, {'2', '0', '1'}, {'2', '1', '0'}};
-    std::vector<std::string>res(6, "");
+    std::string s02, s10, s12, s20, s21;
     for(const auto c : s){
-        for(int i = 0; i < 6; i++){
-            res[i] += permutations[i][c - '0'];
+        if(c == '0'){
+            s02 = s02 + "0";
+            s10 = s10 + "1";
+            s12 = s12 + "1";
+            s20 = s20 + "2";
+            s21 = s21 + "2";
+        }
+        else if(c == '1'){
+            s02 = s02 + "2";
+            s10 = s10 + "0";
+            s12 = s12 + "2";
+            s20 = s20 + "0";
+            s21 = s21 + "1";
+        }
+        else{
+            s02 = s02 + "1";
+            s10 = s10 + "2";
+            s12 = s12 + "0";
+            s20 = s20 + "1";
+            s21 = s21 + "0";
         }
     }
-    return res;
+    return std::vector<std::string>({s, s02, s10, s12, s20, s21});
 }
 
-std::vector<std::string> all_words(const std::vector<std::string>& l){
+std::vector<std::string> all_words(std::vector<std::string> l){
     /*
     l must be a list of words all starting with 01
     */
     std::vector<std::string> res = {};
-    for(const auto& s : l){
-        for(const auto& e : all_permutations(s)){
+    for(const auto s : l){
+        for(const auto e : all_permutations(s)){
             res.push_back(e);
         }
     }
     return res;
 }
 
-std::unordered_map<std::string, std::vector<std::string>> Rauzy(std::vector<std::string>& nodes){
+bool is_extandable_block(std::string& s, std::vector<std::string> nodes){
+    /*
+    Nodes is a list of "good" factors of lengfth FAC_LENGTH
+
+    s = uv with u, v in nodes
+
+    is s extendable do a word of length BLOCK_EXTENDABILITY_LENGTH square-free, square-free mod P and Q with only blocks from nodes ?
+    */
+    return true;
+}
+
+std::unordered_map<std::string, std::vector<std::string>> Rauzy(std::vector<std::string> nodes){
     std::unordered_map<std::string, std::vector<std::string>> rauzy;
-    for(const auto& n1 : nodes){
+    for(const auto n1 : nodes){
         rauzy[n1] = {};
-        for(const auto& n2 : nodes){
+        for(const auto n2 : nodes){
             if(checkSquarefree(n1+n2) && checkSquarefree(getSubsequence(n1 + n2, P)) && checkSquarefree(getSubsequence(n1 + n2, Q))){
                 rauzy[n1].push_back(n2);
             }
@@ -544,7 +447,7 @@ std::unordered_map<std::string, std::vector<std::string>> Rauzy(std::vector<std:
 }
 
 
-std::vector<std::string> long_words(const std::vector<std::string>& nodes, std::unordered_map<std::string, std::vector<std::string>>& rauzy, const int LARGE_WORDS_LENGTH){
+std::vector<std::string> long_words(const std::vector<std::string> nodes, std::unordered_map<std::string, std::vector<std::string>> rauzy, const int LARGE_WORDS_LENGTH){
     /*
     Computes all "large" ternary square-free words, square-free mod P and Q
 
@@ -554,10 +457,10 @@ std::vector<std::string> long_words(const std::vector<std::string>& nodes, std::
     std::vector<std::string> res = {};
     std::vector<std::string> all_nodes = all_words(nodes);
     // For every possible prefix of size 40 : 
-    for(const auto& node : nodes){
+    for(const auto node : nodes){
         std::string s = node;
         std::stack<std::string> stack;
-        for(const auto& nei : rauzy[node]){
+        for(const auto nei : rauzy[node]){
             stack.push(nei);
         }
         while(!stack.empty()){
@@ -579,7 +482,7 @@ std::vector<std::string> long_words(const std::vector<std::string>& nodes, std::
                     }
                     else{
                         stack.push("p");
-                        for(const auto& nei : rauzy[local_node]){
+                        for(const auto nei : rauzy[local_node]){
                             stack.push(nei);
                         }
                     }
@@ -619,7 +522,7 @@ std::tuple<std::unordered_map<std::string, int>, std::vector<std::vector<int>>, 
 
     // unordered_map of the suffixes and prefixes so we compute them just once
     std::unordered_map<std::string, std::string> suff;
-    for(const auto& factor : factors){ 
+    for(const auto factor : factors){ 
         std::string s = "";
         for(int i = 0; i < size_of_factors - FAC_SIZE; i++){
             s = s + factor[FAC_SIZE + i];
@@ -630,8 +533,8 @@ std::tuple<std::unordered_map<std::string, int>, std::vector<std::vector<int>>, 
     // construction of the graph
     int cpt = 0;
     std::string nei;
-    for(const auto& factor : factors){
-        for(const auto& extention : small_factors){
+    for(const auto factor : factors){
+        for(const auto extention : small_factors){
             nei = suff[factor] + extention;
             if(set_of_factors.find(nei) != set_of_factors.end()){
                 adjList[toVertex[factor]].push_back(toVertex[nei]);
@@ -644,7 +547,7 @@ std::tuple<std::unordered_map<std::string, int>, std::vector<std::vector<int>>, 
     return std::make_tuple(toVertex, adjList, invAdjList);
 }
 
-void statistics(const std::unordered_map<std::string, int>& toVertex, const std::vector<std::vector<int>>& adjList, const std::vector<std::vector<int>>& invAdjList){
+void statistics(std::unordered_map<std::string, int>& toVertex, std::vector<std::vector<int>>& adjList, std::vector<std::vector<int>>& invAdjList){
     int num_vertices = toVertex.size();
     int sum_degin = 0;
     int sum_degout = 0;
@@ -668,10 +571,10 @@ void statistics(const std::unordered_map<std::string, int>& toVertex, const std:
             num_of_zeros_out++;
         }
     }
-    std::cout << num_vertices << " vertices, max_degin = " << max_degin << ", max_degout = " << max_degout << ", sum_degin = " << sum_degin << ", sum_degout = " << sum_degout << ", num_of_zeros_in = " << num_of_zeros_in << ", num_of_zeros_out = " << num_of_zeros_out << " mean deg = " << sum_degout/(num_vertices - num_of_zeros_out + 0.0) << std::endl;
+    std::cout << num_vertices << " vertices, max_degin = " << max_degin << ", max_degout = " << max_degout << ", sum_degin = " << sum_degin << ", sum_degout = " << sum_degout << ", num_of_zeros_in = " << num_of_zeros_in << ", num_of_zeros_out = " << num_of_zeros_out << std::endl;
 }
 
-void prunning_graph_BigStepRauzy(const std::unordered_map<std::string, int>& toVertex, std::vector<std::vector<int>>& adjList, std::vector<std::vector<int>>& invAdjList){
+void prunning_graph_BigStepRauzy(std::unordered_map<std::string, int>& toVertex, std::vector<std::vector<int>>& adjList, std::vector<std::vector<int>>& invAdjList){
     /*
     disconnects every node of out-degree or of indegree 0 until no new changes occur
     */
@@ -712,117 +615,7 @@ void prunning_graph_BigStepRauzy(const std::unordered_map<std::string, int>& toV
     }
 }
 
-void auxTarjan(const int depth, int& maxdepth, const int v, int& index, std::vector<int>& indexes, std::vector<int>& lowlink, std::stack<int>& stack, std::vector<bool>& onStack, int& partition_size, std::vector<int>& partition, std::vector<std::vector<int>>& adjList){
-    
-    if(depth > maxdepth){
-        maxdepth = depth;
-    }
-    indexes[v] = index;
-    lowlink[v] = index;
-    index++;
-    stack.push(v);
-    onStack[v] = true;
-    for(const auto w : adjList[v]){
-        if(indexes[w] == -1){
-            auxTarjan(depth + 1, maxdepth, w, index, indexes, lowlink, stack, onStack, partition_size, partition, adjList);
-            lowlink[v] = std::min(lowlink[v], lowlink[w]);
-        }
-        else if(onStack[w]){
-            lowlink[v] = std::min(lowlink[v], indexes[w]);
-        }
-    }
-    if(lowlink[v] == indexes[v]){
-        int w;
-        do{
-            w = stack.top();
-            stack.pop();
-            onStack[w] = false;
-            partition[w] = partition_size;
-        }
-        while(w != v);
-        partition_size++;
-    }
-}   
-
-std::vector<int> TarjanAlgorithm(std::vector<std::vector<int>>& adjList){
-    /*
-    isolate every maximal strongly connected component in the graph
-
-    so if C1 -> C2 but not C2 -> C1, we delete every arrow from C1 to C2 and that for every maximal strongly connected component of the graph
-    */
-    int n = adjList.size();
-    int index = 0;
-    int partition_size = 0;
-    int maxdepth = 0;
-    std::vector<int>partition(n, -1);
-    std::vector<int>indexes(n, -1);
-    std::vector<int>lowlink(n, -1);
-    std::vector<bool>onStack(n, false);
-    std::stack<int>stack;
-    for(int v = 0; v < n; v++){
-        if(indexes[v] == -1){
-            auxTarjan(0, maxdepth, v, index, indexes, lowlink, stack, onStack, partition_size, partition, adjList);
-        }
-    }
-    std::cout << "number of parts  = " << partition_size << std::endl;
-    std::cout << "max depth in dfs = " << maxdepth << std::endl;
-    return partition;
-}
-
-void applyTarjan(std::vector<std::vector<int>>& adjList, std::vector<std::vector<int>>& invAdjList){
-    std::vector<int>partition = TarjanAlgorithm(adjList);
-    for(int v = 0; v < adjList.size(); v++){
-        std::vector<int>toRemove = {};
-        for(const auto w : adjList[v]){
-            if(partition[v] != partition[w]){
-                // We remember that we must remove w from the out-neighbors of v
-                toRemove.push_back(w);
-                // we remove v from the in-neighbours of w
-                auto it = std::find(invAdjList[w].begin(), invAdjList[w].end(), v);
-                if(it != invAdjList[w].end()){
-                    invAdjList[w].erase(it);
-                }
-            }
-        }
-        // then we remove ever unnecessary out-neighbor of v
-        for(const auto w : toRemove){
-            // we remove w from the out-neighbours of v
-            auto it = std::find(adjList[v].begin(), adjList[v].end(), w);
-            if(it != adjList[v].end()){
-                adjList[v].erase(it);
-            }
-        }
-    }
-}
-
-void statsTarjan(std::vector<std::vector<int>>& adjList, std::vector<std::vector<int>>& invAdjList){
-    const int n = adjList.size();
-    std::vector<int>partition = TarjanAlgorithm(adjList);
-    std::vector<std::vector<int>>invPart(n, std::vector<int>());
-    for(int i = 0; i < n; i++){
-        if(adjList[i].size() != 0){
-            invPart[partition[i]].push_back(i);
-        }
-    }
-    int cpt1 = 0;
-    for(int i = 0; i < n; i++){
-        if(invPart[i].size() > 0){
-            if(invPart[i].size() > 1){
-                std::cout << "part " << i << " has " << invPart[i].size() << " elements " << std::endl;
-            }
-            else{
-                cpt1++;
-            }
-        }
-    }
-    std::cout << "and " << cpt1 << " CC of size 1" << std::endl;
-}
-
-
-
-
-
-void print_factor(const std::string& s, std::unordered_map<std::string, int>& toVertex, const std::vector<std::vector<int>>& adjList, const int LARGE_WORDS_LENGTH){
+void print_factor(std::string& s, std::unordered_map<std::string, int>& toVertex, std::vector<std::vector<int>>& adjList, const int LARGE_WORDS_LENGTH){
     for(int i = 0; i < s.size() - LARGE_WORDS_LENGTH; i = i + FAC_SIZE){
         std::string loc = "";
         for(int j = 0; j < LARGE_WORDS_LENGTH; j++){
@@ -833,162 +626,123 @@ void print_factor(const std::string& s, std::unordered_map<std::string, int>& to
     std::cout << std::endl;
 }
 
-int right_extends_with_graph_BigStepRauzy(const int factor_id, const std::string& factor, std::unordered_map<std::string, int>& toVertex, std::vector<std::vector<int>>& adjList, std::vector<std::string>& suffix, const int TO , const int LARGE_WORDS_LENGTH){
-    std::cout << "try right extend " << factor_id << std::endl;
+int right_extends_with_graph_BigStepRauzy(const int& factor_id, std::string& factor, std::unordered_map<std::string, int>& toVertex, std::vector<std::vector<int>>& adjList, std::vector<std::string>& suffix, const int& TO , const int& LARGE_WORDS_LENGTH){
+    std::cout << "try right extend of " << factor_id << " " << factor << std::endl;
     int TO_cpt = 0;
     // string for the search with factor as a prefix
     std::string s = factor;
-    std::deque<int>path = {factor_id};
     // stack for the backtrack
-    std::stack<int> stack;
+    std::stack<std::string> stack;
     for(const int nei : adjList[factor_id]){
-        stack.push(nei);
+        stack.push(suffix[nei]);
     }
-    int longest = 0;
-    // For LARGE_WORDS_LENGTH >= 240 !!
-    std::vector<std::pair<int, int>>ForcedPositionsP = {std::make_pair<int, int>(20, 8), std::make_pair<int, int>(20, 32), std::make_pair<int, int>(60, 32), std::make_pair<int, int>(120, 8), std::make_pair<int, int>(120, 32)};
-    std::vector<std::pair<int, int>>ForcedPositionsQ = {};
     while(!stack.empty() && (TO == -1 || TO_cpt < TO)){
-        if(s.size() > longest){
-            longest = s.size();
-        }
         TO_cpt++;
         if(TO_cpt % 10000000 == 0){
-            std::cout << "intermediate factor : ";
+            auto end = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+            std::cout << "TIME FROM START = " << duration.count()/1000 << std::endl;
+            std::cout << TO_cpt << std::endl;
             print_factor(s, toVertex, adjList, LARGE_WORDS_LENGTH); 
-            std::cout << "path = " << std::endl;
-            for(const auto e : path) std::cout << e << " ";
-            std::cout << std::endl;
         } 
         // If we want to backtrack
-        if(stack.top() == -1){
+        if(stack.top() == "p"){
             stack.pop();
-            path.pop_back();
             // we erase the FAC_SIZE last letters of s
             s.erase(s.size() - FAC_SIZE , FAC_SIZE);
         }
         else{
-            int local_factor_id = stack.top();
+            std::string local_factor = stack.top();
             stack.pop();
-            s = s + suffix[local_factor_id];
-            path.push_back(local_factor_id);
+            s = s + local_factor;
             // Now, we check that s is a good word
-            if(
-                checkSquareFreeAtEndV2SuffixString(s, P, FAC_SIZE, true) && 
-                //checkSquareFreeForcedPositionsEnd(s, P, FAC_SIZE, ForcedPositionsP) &&
-                //checkSquareFreeAtEndV2SuffixString(s, Q, FAC_SIZE, true) && 
-                //checkSquareFreeAtEndVector(path, true) &&
-                true
-            ){ 
+            //if(checkSquareFreeAtEndSuffixString(s, FAC_SIZE) && checkSquareFreeAtEndSuffixString(getSubsequence(s, P), FAC_SIZE/P) && checkSquareFreeAtEndSuffixString(getSubsequence(s, Q), FAC_SIZE/Q)){
+            if(checkSquareFreeAtEndV2SuffixString(s, P, FAC_SIZE) && checkSquareFreeAtEndV2SuffixString(s, Q, FAC_SIZE)){
                 if(s.size() >= SIZE){
                     std::cout << " a large word has been found  : \n" << s << std::endl;
                     return -1;
                 }
-                stack.push(-1);
-                // we compute the current state in the Rauzy graph (maybe can be done better with a stack of states ?)
+                stack.push("p");
                 std::string current_factor = "";
                 for(int i = 0; i < LARGE_WORDS_LENGTH; i++){
                     current_factor = current_factor + s[s.size() - LARGE_WORDS_LENGTH + i];
                 }
                 for(const int nei : adjList[toVertex[current_factor]]){
-                    stack.push(nei);
+                    stack.push(suffix[nei]);
                 }
             }
             else{
                 s.erase(s.size() - FAC_SIZE , FAC_SIZE);
-                path.pop_back();
             }
         }
     }
-    histo_length_right[longest]++;
     return TO_cpt;
 }
 
-int left_extends_with_graph_BigStepRauzy(const int factor_id, const std::string& factor, std::unordered_map<std::string, int>& toVertex, std::vector<std::vector<int>>& invAdjList, std::vector<std::string>& prefix, const int TO , const int LARGE_WORDS_LENGTH){
-    std::cout << "try left extend " << factor_id << std::endl;
+int left_extends_with_graph_BigStepRauzy(const int& factor_id, std::string& factor, std::unordered_map<std::string, int>& toVertex, std::vector<std::vector<int>>& invAdjList, std::vector<std::string>& prefix, const int& TO , const int& LARGE_WORDS_LENGTH){
+    std::cout << "try left extend of " << factor_id << " " << factor << std::endl;
     int TO_cpt = 0;
     // string for the search with factor as a prefix
     std::string s = factor;
-    std::deque<int>path = {factor_id};
     // stack for the backtrack
-    std::stack<int> stack;
+    std::stack<std::string> stack;
     for(const int nei : invAdjList[factor_id]){
-        stack.push(nei);
+        stack.push(prefix[nei]);
     }
-    int longest = 0;
-    // For LARGE_WORDS_LENGTH >= 240 !!
-    std::vector<std::pair<int, int>>ForcedPositionsP = {std::make_pair<int, int>(20, 0), std::make_pair<int, int>(20, 32), std::make_pair<int, int>(60, 32), std::make_pair<int, int>(120, 32)};
-    std::vector<std::pair<int, int>>ForcedPositionsQ = {};
     while(!stack.empty() && (TO == -1 || TO_cpt < TO)){
-        if(s.size() > longest){
-            longest = s.size();
-        }
         TO_cpt++;
         if(TO_cpt % 10000000 == 0){
-            std::cout << "intermediate factor : ";
+            auto end = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+            std::cout << "TIME FROM START = " << duration.count()/1000 << std::endl;
+            std::cout << TO_cpt << std::endl;
             print_factor(s, toVertex, invAdjList, LARGE_WORDS_LENGTH); 
-            std::cout << "path = ";
-            for(const auto e : path) std::cout << e << " ";
-            std::cout << std::endl;
         } 
         // If we want to backtrack
-        if(stack.top() == -1){
+        if(stack.top() == "p"){
             stack.pop();
             // we erase the FAC_SIZE last letters of s
             s.erase(0 , FAC_SIZE); // erase the prefix of length FAC_SIZE
-            path.pop_front();
         }
         else{
-            int local_factor_id = stack.top();
+            std::string local_factor = stack.top();
             stack.pop();
-            s = prefix[local_factor_id] + s;
-            path.push_front(local_factor_id);
+            s = local_factor + s;
             // Now, we check that s is a good word
-            if(
-                checkSquareFreeAtBegV2SuffixString(s, P, FAC_SIZE, true) && 
-                //checkSquareFreeForcedPositionsBeg(s, P, FAC_SIZE, ForcedPositionsP) &&
-                //checkSquareFreeAtBegV2SuffixString(s, Q, FAC_SIZE, true) &&
-                //checkSquareFreeAtBegVector(path, true) &&
-                true
-            ){ 
+            //if(checkSquareFreeAtEndSuffixString(s, FAC_SIZE) && checkSquareFreeAtEndSuffixString(getSubsequence(s, P), FAC_SIZE/P) && checkSquareFreeAtEndSuffixString(getSubsequence(s, Q), FAC_SIZE/Q)){
+            if(checkSquareFreeAtBegV2SuffixString(s, P, FAC_SIZE) && checkSquareFreeAtBegV2SuffixString(s, Q, FAC_SIZE)){
                 if(s.size() >= SIZE){
                     std::cout << " a large word has been found  : \n" << s << std::endl;
                     return -1;
                 }
-                stack.push(-1);
-                // we compute the current state in the Rauzy graph (maybe can be done better with a stack of states ?)
+                stack.push("p");
                 std::string current_factor = "";
                 for(int i = 0; i < LARGE_WORDS_LENGTH; i++){
                     current_factor = current_factor + s[i];
                 }
                 for(const int nei : invAdjList[toVertex[current_factor]]){
-                    stack.push(nei);
+                    stack.push(prefix[nei]);
                 }
             }
             else{
                 s.erase(0 , FAC_SIZE); // erase the prefix of length FAC_SIZE
-                path.pop_front();
             }
         }
     }
-    histo_length_left[longest]++;
     return TO_cpt;
 }
 
-void searchTimeOut_with_graph_BigStepRauzy(const std::vector<std::string>& factors, std::unordered_map<std::string, int>& toVertex, std::vector<std::vector<int>>& adjList, std::vector<std::vector<int>>& invAdjList, const int LARGE_WORDS_LENGTH){
+void searchTimeOut_with_graph_BigStepRauzy(std::vector<std::string>& factors, std::unordered_map<std::string, int>& toVertex, std::vector<std::vector<int>>& adjList, std::vector<std::vector<int>>& invAdjList, const int& LARGE_WORDS_LENGTH){
     /*
     backtrack algorithm using the Rauzy graph in the search
 
     */
     std::cout << "start search with big step Rauzy graph, LARGE_WORDS_LENGTH = " << LARGE_WORDS_LENGTH << std::endl;
     std::vector<std::string> all_factors = all_words(factors); // notice that all_factors is the inverse unordered_map of toVertex
-    for(const auto& factor : all_factors){
-        std::cout << factor << " - " << toVertex[factor] << std::endl;
-    }
     // We first precompute the suffixes of length FAC_SIZE
     std::vector<std::string> suffix; // stores the suffixs of lengths FAC_SIZE
     std::vector<std::string> prefix; // stores the prefixs of lengths FAC_SIZE
-    for(const auto& factor : all_factors){
+    for(const auto factor : all_factors){
         std::string su = "";
         std::string pr = "";
         for(int i = 0; i < FAC_SIZE; i++){
@@ -998,45 +752,27 @@ void searchTimeOut_with_graph_BigStepRauzy(const std::vector<std::string>& facto
         suffix.push_back(su);
         prefix.push_back(pr);
     }
-    int startingTO = 200;
-    int TO = startingTO;
+    int TO = 200;
     int fp_detector = 0;
     std::deque<int> fifo;
     for(int i = 0; i < factors.size(); i++){
         fifo.push_back(6*i);
     }
-    int cpt_hour = 0;
     while(fifo.size() > 0){
-        if(cpt_hour == 10){
-            auto end = std::chrono::high_resolution_clock::now();
-            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-            std::cout << "TIME FROM START = " << duration.count()/1000 <<"s" << std::endl;
-            cpt_hour = 0;
-        }
-        else{
-            cpt_hour++;
-        }
+        std::cout << "|fifo| = " << fifo.size() << " TO = " << TO << " FP = " << fp_detector << std::endl;
         int factor_id = fifo.front();
         std::string factor = all_factors[factor_id];
         fifo.pop_front();
-        int TO_cpt_right;
+        int TO_cpt_right = right_extends_with_graph_BigStepRauzy(factor_id, factor, toVertex, adjList, suffix, TO, LARGE_WORDS_LENGTH);
         int TO_cpt_left;
-        if(adjList[factor_id].size() == 0){
-            TO_cpt_right = 0;
-            TO_cpt_left = 0;
+        if(TO_cpt_right >= TO){
+            TO_cpt_left = left_extends_with_graph_BigStepRauzy(factor_id, factor, toVertex, invAdjList, prefix, TO, LARGE_WORDS_LENGTH);
         }
-        else{
-            std::cout << "|fifo| = " << fifo.size() << " TO = " << TO << " FP = " << fp_detector << std::endl;
-            TO_cpt_right = right_extends_with_graph_BigStepRauzy(factor_id, factor, toVertex, adjList, suffix, TO, LARGE_WORDS_LENGTH);
-            if(TO_cpt_right >= TO){
-                TO_cpt_left = left_extends_with_graph_BigStepRauzy(factor_id, factor, toVertex, invAdjList, prefix, TO, LARGE_WORDS_LENGTH);
-            }
-           else{
-                TO_cpt_left = TO_cpt_right;
-           }
-           std::cout << " TO left = " << TO_cpt_left << " TO right = " << TO_cpt_right << std::endl;
-        }
+       else{
+            TO_cpt_left = TO_cpt_right;
+       }
         // if the backtrack ended before the Time Out
+        std::cout << TO_cpt_left << " " << TO_cpt_right << std::endl;
         if(TO_cpt_right == -1 || TO_cpt_left == -1){
             return;
         }
@@ -1044,7 +780,7 @@ void searchTimeOut_with_graph_BigStepRauzy(const std::vector<std::string>& facto
             // we reset the counter for detection of fixed point
             fp_detector = 0;
             // we can cut the graph by removing factor (and the equivalent fact)
-            for(const auto& factor_to_delete : all_words({factor})){
+            for(const auto factor_to_delete : all_words({factor})){
                 // we remove factore_to_delete from the neighbourhood of its right neighbours
                 for(const auto right_nei : adjList[toVertex[factor_to_delete]]){
                     auto it = std::find(invAdjList[right_nei].begin(), invAdjList[right_nei].end(), toVertex[factor_to_delete]);
@@ -1056,7 +792,6 @@ void searchTimeOut_with_graph_BigStepRauzy(const std::vector<std::string>& facto
                 //toVertex.erase(factor_to_delete);
             }
             prunning_graph_BigStepRauzy(toVertex, adjList, invAdjList);
-            //applyTarjan(adjList, invAdjList);
             statistics(toVertex, adjList, invAdjList);
             // we can finally remove factor from the unordered_maps
         }
@@ -1066,15 +801,11 @@ void searchTimeOut_with_graph_BigStepRauzy(const std::vector<std::string>& facto
             fifo.push_back(factor_id);
         }
         fp_detector++;
-        if(fp_detector > fifo.size()/100){
+        if(fp_detector > fifo.size()){
             statistics(toVertex, adjList, invAdjList);
-            if(TO == startingTO){
-                applyTarjan(adjList, invAdjList);
+            if(TO == 200){
+                return;
                 TO = 30000000;
-                for(int j = 0; j < 4000; j++){
-                    histo_length_right[j] = 0;
-                    histo_length_left[j] = 0;
-                }
             }
             else{
                 TO = -1;
@@ -1157,92 +888,20 @@ int main(int argc, char* argv[]){
     // //search(l, Rauzy(all_words(l)));
     std::cout << "generation of medium length good words from the blocks" << std::endl;
     int LARGE_WORDS_LENGTH = 240;
-    std::vector<std::string> aw = all_words(l);
-    std::unordered_map<std::string, std::vector<std::string>> R = Rauzy(aw); // Rauzy graph
-    std::vector<std::string> lw = long_words(l, R, LARGE_WORDS_LENGTH); 
+    std::vector<std::string> lw = long_words(l, Rauzy(all_words(l)), LARGE_WORDS_LENGTH); // ~1min30sec with LARGE_WORDS_LENGTH = 320
     std::random_shuffle(lw.begin(), lw.end());
     std::cout << lw.size() << std::endl;
-    std::tuple<std::unordered_map<std::string, int>, std::vector<std::vector<int>>, std::vector<std::vector<int>>> G =  graph_BigStepRauzy(all_words(lw), aw);
+    std::tuple<std::unordered_map<std::string, int>, std::vector<std::vector<int>>, std::vector<std::vector<int>>> G =  graph_BigStepRauzy(all_words(lw), all_words(l));
     std::unordered_map<std::string, int> toVertex = std::get<0>(G); 
     std::vector<std::vector<int>> adjList = std::get<1>(G); 
     std::vector<std::vector<int>> invAdjList = std::get<2>(G);
     std::cout << " statistics pre prunning : " << std::endl;
     statistics(toVertex, adjList, invAdjList);
     std::cout << "prunning." << std::endl;
-    // We recursively disconnect the 0 degree vertices
     prunning_graph_BigStepRauzy(toVertex, adjList, invAdjList);
     std::cout << " statistics post prunning : " << std::endl;
     statistics(toVertex, adjList, invAdjList);
-    // // Then we disconnect the strongly connected components
-    std::cout << "Tarjan Algorithm." << std::endl;
-    statsTarjan(adjList, invAdjList);
-    applyTarjan(adjList, invAdjList);
-    std::cout << " statistics post Tarjan : " << std::endl;
-    statistics(toVertex, adjList, invAdjList);
-    std::cout << "re pruning, nothing should change" << std::endl;
-    prunning_graph_BigStepRauzy(toVertex, adjList, invAdjList);
-    std::cout << " statistics post prunning post Tarjan: " << std::endl;
-    statistics(toVertex, adjList, invAdjList);
-
     searchTimeOut_with_graph_BigStepRauzy(lw, toVertex, adjList, invAdjList, LARGE_WORDS_LENGTH);
-    std::cout << "\n---------------------------------------------------------\n# of squares of given period and position : \n for P = " << P << " : \n"<< std::endl;
-    for(int period = 1; period < 2000; period++){
-        for(int end = 0; end < 2000; end++){
-            if(squaresEndP[period][end] != 0 ||  squaresBegP[period][end] != 0){
-                std::cout << "period = " << std::setw(5) << period << " end = " << std::setw(5) << end <<
-                            " # squares mod P end = " << std::setw(11) << squaresEndP[period][end] << 
-                            " # squares mod P beg = " << std::setw(11) << squaresBegP[period][end] <<  std::endl;
-            }
-        }
-    }
-    std::cout << "For Q = " << Q << ": \n" << std::endl;
-    for(int period = 1; period < 2000; period++){
-        for(int end = 0; end < 2000; end++){
-            if(squaresEndQ[period][end] != 0 || squaresBegQ[period][end] != 0){
-                std::cout << "period = " << std::setw(5) << period << " end = " << std::setw(5) << end <<
-                            " # squares mod Q end = " << std::setw(11) << squaresEndQ[period][end] << 
-                            " # squares mod Q beg = " << std::setw(11) << squaresBegQ[period][end] <<  std::endl;
-            }
-        }
-    }
-    std::cout << "For path : \n" << std::endl;
-    for(int period = 1; period < 2000; period++){
-        if(squaresEndPath[period] != 0 || squaresBegPath[period] != 0){
-            std::cout << "period = " << std::setw(5) << period <<
-                        " # squares path end = " << std::setw(11) << squaresEndPath[period] << 
-                        " # squares path beg = " << std::setw(11) << squaresBegPath[period] <<  std::endl;
-        }
-    }
-    std::cout << "\n---------------------------------------------------------\n long found words : \n"<< std::endl;
-    std::cout << "size        | histo left  |   histo right" << std::endl;
-    for(int i = 0; i < 4000; i++){
-        if(histo_length_right[i] != 0 || histo_length_left[i] != 0){
-            std::cout << std::setw(11) << i << " | " << std::setw(11)  << histo_length_left[i] << " | " << std::setw(11) << histo_length_right[i] << std::endl;
-        }
-    }
-    // Test for Tarjan Algorithm 
-    // std::vector<std::vector<int>> adjList = {{1}, {2}, {0}, {1, 2, 5}, {2, 6}, {3, 4}, {4}, {5, 6}};
-    // std::vector<std::vector<int>> invAdjList = {{2}, {0, 3}, {1, 3, 4}, {5}, {5, 6}, {3, 7}, {4, 7}, {}};
-    // applyTarjan(adjList, invAdjList);
-    // for(int v = 0; v < 8; v++){
-    //     std::cout << "v = " << v << std::endl;
-    //     std::cout << "  vw :" << std::endl;
-    //     for(const auto w : adjList[v]){
-    //         std::cout << "      " << w << " ";
-    //     }
-    //     std::cout << std::endl;
-    //     std::cout << "  wv :" << std::endl;
-    //     for(const auto w : invAdjList[v]){
-    //         std::cout << "      " << w << " ";
-    //     }
-    //     std::cout << std::endl;
-    // }
-    // std::cout << "\n\n\n";
-    // std::vector<std::vector<int>> adjList2 = {{1}, {2}, {0}, {0}, {8, 11}, {2}, {1, 7}, {8}, {9}, {10, 11}, {9}, {10, 12}, {5, 6}};
-    // std::vector<int>part2 = TarjanAlgorithm(adjList2);
-    // for(int i = 0; i < 13; i++){
-    //     std::cout << i << " " << part2[i] << std::endl;
-    // }
+
     return 0;
 }
-

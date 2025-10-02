@@ -13,7 +13,7 @@
 
 /*
 
-Code to assert that the bad patterns are 20-constructible
+Code to assert that the bad patterns are 20-constructible. To do so, we explicitely provide the construction
 
 compilation : g++ -O3 -march=native -flto -g -o lemma_C.o lemma_C.cpp
 execution   : ./lemma_C.o
@@ -21,7 +21,7 @@ execution   : ./lemma_C.o
 
 */
 
-void has_motif_notA_delta_B_delta_notC(const std::string s, const int a, const int b, const int c, const int distance){
+void has_motif_notA_delta_B_delta_notC(const std::string s, const char a, const char b, const char c, const int distance){
 	for(int i = 0; i < s.size()-2*distance; i++){
 		if(s[i] != a && s[i + distance] == b && s[i + 2*distance] != c){
 			std::cout << s << " contains the pattern !" << a << "<-" << distance << "->" << b << "<-" << distance << "->!" << c << " at position " << i << std::endl;
@@ -56,9 +56,9 @@ h25['2'] = "2010210121021201210120102";
 h26['2'] = "20102101210212010210120102";
 
 
+std::cout << "The largest position should be at most 20" << std::endl;
 
-
-// !a <-17-> a <-17-> !a                                      c <> b <> c
+// !a <-17-> a <-17-> !a                                      
 has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '0', '0', '0', 17);
 has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '0', '0', '0', 17);
 has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '1', '1', '1', 17);

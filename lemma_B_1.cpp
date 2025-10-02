@@ -14,7 +14,7 @@
 
 /*
 
-Code to assert that !a<-distance->!b is 6-recurrent
+Code to assert that the pattern (!a)⋄^d(!b) is 6-recurrent for d in {0..17}
 
 compilation : g++ -O3 -march=native -flto -g -o lemma_B_1.o lemma_B_1.cpp
 execution   : ./lemma_B_1.o
@@ -119,7 +119,7 @@ void max_distance_between_patterns(const char a, const char b, int distance, std
 			}
 		}
 	}
-	std::cout << "For the pattern !" << a << "<--" << std::to_string(distance) << "-->!" << b << ", the largest distance is " << std::to_string(largest) << " reached for the factor" << std::endl;
+	std::cout << "For the pattern !" << a << "<--" << std::to_string(distance) << "-->!" << b << ", the largest distance is " << std::to_string(largest) << std::endl;
 }
 
 void all_factors(const std::string& s, const int size, std::set<std::string>& acc){
@@ -196,6 +196,7 @@ std::set<std::string> images_of_h26(const int size_for_factors, const int number
 }
 
 int main() {
+	std::cout << "the largest distance should be at most 7" << std::endl;
 	for(char a : {'0', '1', '2'}){
 		for(char b : {'0', '1', '2'}){
 			for(const int distance : {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}){

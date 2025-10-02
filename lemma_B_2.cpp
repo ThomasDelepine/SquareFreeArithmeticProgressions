@@ -14,7 +14,7 @@
 
 /*
 
-Code to assert that the pattern !a<-distance->b<-distance->!c is 27-recurrent
+Code to assert that the pattern P = (!a)⋄^db⋄^d(!c) is 27-recurrent for d in {0..17} and P not in Pbad 
 
 compilation : g++ -O3 -march=native -flto -g -o lemma_B_2.o lemma_B_2.cpp
 execution   : ./lemma_B_2.o
@@ -119,7 +119,7 @@ void max_distance_between_patterns(const char a, const char b, const char c, int
 			}
 		}
 	}
-	std::cout << "For the pattern !" << a << "<--" << std::to_string(distance) << "-->" << b << "<--" << distance << "-->!" << c << ", the largest distance is " << std::to_string(largest) << " reached for the factor" << std::endl;
+	std::cout << "For the pattern !" << a << "<--" << std::to_string(distance) << "-->" << b << "<--" << distance << "-->!" << c << ", the largest distance is " << std::to_string(largest) << std::endl;
 }
 
 void all_factors(const std::string& s, const int size, std::set<std::string>& acc){
@@ -239,6 +239,7 @@ bool not_in_Pbad(const char a, const char b, const char c, const int distance){
 }
 
 int main() {
+	std::cout << "the largest distance should be at most 28" << std::endl;
 	for(char a : {'0', '1', '2'}){
 		for(char b : {'0', '1', '2'}){
 			for(char c : {'0', '1', '2'}){
