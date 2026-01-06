@@ -15,7 +15,7 @@
 /*
 
 Code to assert that 
-	- the pattern a⋄^(d)b is (27, h26)-recurrent for d in {1, 2, 4, 5, 6, 7, 8}, and
+	- the pattern (a)⋄^d(b) is (27, h26)-recurrent for d in {1, 2, 4, 5, 6, 7, 8}, and
 	- the pattern ab is (12, h26)-recurrent for a != b
 
 compilation : g++ -O3 -march=native -flto -g -o lemma_A.o lemma_A.cpp
@@ -52,18 +52,18 @@ bool checkSquareFreeAtEnd(std::string& s, int l){
 
 
 
-std::pair<bool, int> has_two_patterns(const std::string& s, const char a, const char b, const int distance){
+std::pair<bool, int> has_two_patterns(const std::string& s, const char a, const char b, const int d){
 	/*
-	returns (false, -1) if s does not have the pattern a⋄^(d)b 
-	returns (true, -1)  if s has exactly one occurence of the pattern a⋄^(d)b 
-	returns (true, d)   if s has at least two occurences of the pattern and d is the distance between the two leftmost patterns a⋄^(d)b 
+	returns (false, -1) if s does not have the pattern (a)⋄^d(b) 
+	returns (true, -1)  if s has exactly one occurence of the pattern (a)⋄^d(b) 
+	returns (true, dist)   if s has at least two occurences of the pattern and dist is the distance between the two leftmost patterns (a)⋄^d(b) 
 	*/
 
 	// First, we find a first pattern
 	bool has_one_pattern = false;
 	int pos_first_pattern;
-	for(int i = 0; i + distance + 1 < s.size(); i++){
-		if(s[i] == a && s[i + distance + 1] == b){
+	for(int i = 0; i + d + 1 < s.size(); i++){
+		if(s[i] == a && s[i + d + 1] == b){
 			has_one_pattern =  true;
 			pos_first_pattern = i;
 			break;
@@ -72,9 +72,9 @@ std::pair<bool, int> has_two_patterns(const std::string& s, const char a, const 
 
 	// If there is a pattern strating at pos_first_pattern :
 	if(has_one_pattern){
-		for(int i = pos_first_pattern + 1; i + distance + 1 < s.size(); i++){
+		for(int i = pos_first_pattern + 1; i + d + 1 < s.size(); i++){
 			// If we find a second pattern
-			if(s[i] == a && s[i + distance + 1] == b){
+			if(s[i] == a && s[i + d + 1] == b){
 				return std::pair<bool, int>(true, i - pos_first_pattern);
 			}
 		}
@@ -86,9 +86,9 @@ std::pair<bool, int> has_two_patterns(const std::string& s, const char a, const 
 	return std::pair<bool, int>(false, -1);
 }
 
-void max_distance_between_patterns(const char a, const char b, int distance, std::set<std::string>& factors){
+void max_distance_between_patterns(const char a, const char b, int d, std::set<std::string>& factors){
 	/*
-	Returns the maximum distance between the two left-most patterns a⋄^(d)b amongst every factor in factors
+	Returns the maximum distance between the two left-most patterns (a)⋄^d(b) amongst every factor in factors
 
 	If one factor has at most 1 such pattern, we assert(false) (should not be triggered)
 	*/
@@ -96,7 +96,7 @@ void max_distance_between_patterns(const char a, const char b, int distance, std
 	std::string largest_str = "";
 	// Loop over all factors that we are interested in
 	for(std::string s : factors){
-		std::pair<bool, int> tmp = has_two_patterns(s, a, b, distance);
+		std::pair<bool, int> tmp = has_two_patterns(s, a, b, d);
 		if(!tmp.first || tmp.second == -1){
 			assert(false); 
 		}
@@ -107,7 +107,7 @@ void max_distance_between_patterns(const char a, const char b, int distance, std
 			}
 		}
 	}
-	std::cout << "For the pattern " << a << " ⋄^" << std::to_string(distance) << " " << b << ", the largest distance is " << std::to_string(largest) << std::endl;
+	std::cout << "For the pattern (" << a << ") ⋄^" << d << " (" << b << "), the largest distance is " << std::to_string(largest) << std::endl;
 }
 
 void all_factors(const std::string& s, const int size, std::set<std::string>& acc){
@@ -188,8 +188,8 @@ int main() {
 	std::set<std::string> images_of_h26_set = images_of_h26(200, 9);
 	for(char a : {'0', '1', '2'}){
 		for(char b : {'0', '1', '2'}){
-			for(const int distance : {1,2,4,5,6,7,8}){
-				max_distance_between_patterns(a, b, distance, images_of_h26_set);
+			for(const int d : {1,2,4,5,6,7,8}){
+				max_distance_between_patterns(a, b, d, images_of_h26_set);
 			}
 		}
 	}
