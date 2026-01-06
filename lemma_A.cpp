@@ -184,7 +184,7 @@ std::set<std::string> images_of_h26(const int size_for_factors, const int number
 }
 
 int main() {
-	std::cout << "The largest distance should be 28 (hence (27,h)-reccurrence)" << std::endl;
+	std::cout << "The largest distance should be 28 (hence (27,h)-recurrence)" << std::endl;
 	std::set<std::string> images_of_h26_set = images_of_h26(200, 9);
 	for(char a : {'0', '1', '2'}){
 		for(char b : {'0', '1', '2'}){
@@ -193,7 +193,7 @@ int main() {
 			}
 		}
 	}
-	std::cout << "The largest distance should be 13 (hence (12,h)-reccurrence)" << std::endl;
+	std::cout << "The largest distance should be 13 (hence (12,h)-recurrence)" << std::endl;
 	for(char a : {'0', '1', '2'}){
 		for(char b : {'0', '1', '2'}){
 			if(a != b){
