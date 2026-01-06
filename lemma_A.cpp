@@ -15,17 +15,12 @@
 /*
 
 Code to assert that 
-	the pattern a⋄^(d)b is (27, h26)-recurrent for d in {1, 2, 3, 5, 6, 7, 8}
-	the pattern ab is (13, h26)-recurrent for a != b
+	- the pattern a⋄^(d)b is (27, h26)-recurrent for d in {1, 2, 4, 5, 6, 7, 8}, and
+	- the pattern ab is (12, h26)-recurrent for a != b
 
 compilation : g++ -O3 -march=native -flto -g -o lemma_A.o lemma_A.cpp
 execution   : ./lemma_A.o
 
-
-*/
-
-
-/*
 		h26(0) = 01210212021020121021201210
 		h26(1) = 12021020102101202102012021
 		h26(2) = 20102101210212010210120102
@@ -59,16 +54,16 @@ bool checkSquareFreeAtEnd(std::string& s, int l){
 
 std::pair<bool, int> has_two_patterns(const std::string& s, const char a, const char b, const int distance){
 	/*
-	returns (false, -1) if s does not have the pattern a<-distance->b
-	returns (true, -1)  if s has exactly one occurence of the pattern a<-distance->b
-	returns (true, d)   if s has at least two occurences of the pattern and d is the distance between the two leftmost patterns a<-distance->b
+	returns (false, -1) if s does not have the pattern a⋄^(d)b 
+	returns (true, -1)  if s has exactly one occurence of the pattern a⋄^(d)b 
+	returns (true, d)   if s has at least two occurences of the pattern and d is the distance between the two leftmost patterns a⋄^(d)b 
 	*/
 
 	// First, we find a first pattern
 	bool has_one_pattern = false;
 	int pos_first_pattern;
-	for(int i = 0; i < s.size() - distance && i < s.size(); i++){
-		if(s[i] == a && s[i + distance] == b){
+	for(int i = 0; i + distance + 1 < s.size(); i++){
+		if(s[i] == a && s[i + distance + 1] == b){
 			has_one_pattern =  true;
 			pos_first_pattern = i;
 			break;
@@ -77,9 +72,9 @@ std::pair<bool, int> has_two_patterns(const std::string& s, const char a, const 
 
 	// If there is a pattern strating at pos_first_pattern :
 	if(has_one_pattern){
-		for(int i = pos_first_pattern + 1; i < s.size() - distance && i < s.size(); i++){
+		for(int i = pos_first_pattern + 1; i + distance + 1 < s.size(); i++){
 			// If we find a second pattern
-			if(s[i] == a && s[i + distance] == b){
+			if(s[i] == a && s[i + distance + 1] == b){
 				return std::pair<bool, int>(true, i - pos_first_pattern);
 			}
 		}
@@ -93,23 +88,16 @@ std::pair<bool, int> has_two_patterns(const std::string& s, const char a, const 
 
 void max_distance_between_patterns(const char a, const char b, int distance, std::set<std::string>& factors){
 	/*
-	Returns the maximum distance between the two left-most patterns a<-distance->b amongst every factor in factors
+	Returns the maximum distance between the two left-most patterns a⋄^(d)b amongst every factor in factors
 
-	If one factor has at most 1 such pattern, we assert(false)
+	If one factor has at most 1 such pattern, we assert(false) (should not be triggered)
 	*/
 	int largest = 0;
 	std::string largest_str = "";
 	// Loop over all factors that we are interested in
 	for(std::string s : factors){
 		std::pair<bool, int> tmp = has_two_patterns(s, a, b, distance);
-		if(!tmp.first){
-			std::cout << "a factor has no occurence of the pattern : " << a << "<--" << std::to_string(distance) << "-->" << b << std::endl;
-			std::cout << s << std::endl;
-			assert(false); 
-		}
-		else if(tmp.second == -1){
-			std::cout << "a factor has only one occurence of the pattern : " << a << "<--" << std::to_string(distance) << "-->" << b << std::endl;
-			std::cout << s << std::endl;
+		if(!tmp.first || tmp.second == -1){
 			assert(false); 
 		}
 		else{
@@ -119,7 +107,7 @@ void max_distance_between_patterns(const char a, const char b, int distance, std
 			}
 		}
 	}
-	std::cout << "For the pattern " << a << "<--" << std::to_string(distance) << "-->" << b << ", the largest distance is " << std::to_string(largest) << std::endl;
+	std::cout << "For the pattern " << a << " ⋄^" << std::to_string(distance) << " " << b << ", the largest distance is " << std::to_string(largest) << std::endl;
 }
 
 void all_factors(const std::string& s, const int size, std::set<std::string>& acc){
@@ -196,20 +184,20 @@ std::set<std::string> images_of_h26(const int size_for_factors, const int number
 }
 
 int main() {
-	std::cout << "every integer should be at most 28" << std::endl;
+	std::cout << "The largest distance should be 28 (hence (27,h)-reccurrence)" << std::endl;
 	std::set<std::string> images_of_h26_set = images_of_h26(200, 9);
 	for(char a : {'0', '1', '2'}){
 		for(char b : {'0', '1', '2'}){
-			for(const int distance : {2,3,5,6,7,8,9}){
+			for(const int distance : {1,2,4,5,6,7,8}){
 				max_distance_between_patterns(a, b, distance, images_of_h26_set);
 			}
 		}
 	}
-	std::cout << "every distance should be at most 14" << std::endl;
+	std::cout << "The largest distance should be 13 (hence (12,h)-reccurrence)" << std::endl;
 	for(char a : {'0', '1', '2'}){
 		for(char b : {'0', '1', '2'}){
 			if(a != b){
-				max_distance_between_patterns(a, b, 1, images_of_h26_set);
+				max_distance_between_patterns(a, b, 0, images_of_h26_set);
 			}
 		}
 	}	
