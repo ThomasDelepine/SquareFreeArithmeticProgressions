@@ -109,7 +109,7 @@ void max_distance_between_patterns(const char a, const char b, const char c, int
 			}
 		}
 	}
-	std::cout << "For the pattern (!" << a << ") ⋄^" << std::setw(2) << std::setfill(' ') << d << " (" << b << ") ⋄^" << std::setw(2) << std::setfill(' ') <<  d << " (!" << c << "), the largest distance is " << std::to_string(largest) << std::endl;
+	std::cout << std::left << "For the pattern (!" << a << ") ⋄^" << std::setw(2) << std::setfill(' ') << d << " (" << b << ") ⋄^" << std::setw(2) << std::setfill(' ') <<  d << " (!" << c << "), the largest distance is " << std::to_string(largest) << std::endl;
 }
 
 void all_factors(const std::string& s, const int size, std::set<std::string>& acc){

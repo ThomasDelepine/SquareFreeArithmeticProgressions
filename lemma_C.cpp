@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <iomanip>
 #include <algorithm>
 #include <string.h>
 #include <stack>
@@ -21,10 +22,10 @@ execution   : ./lemma_C.o
 
 */
 
-void has_motif_notA_delta_B_delta_notC(const std::string s, const char a, const char b, const char c, const int distance){
-	for(int i = 0; i < s.size()-2*distance; i++){
-		if(s[i] != a && s[i + distance] == b && s[i + 2*distance] != c){
-			std::cout << s << " contains the pattern !" << a << "<-" << distance << "->" << b << "<-" << distance << "->!" << c << " at position " << i << std::endl;
+void has_motif_notA_delta_B_delta_notC(const std::string s, const char a, const char b, const char c, const int d){
+	for(int i = 0; i + 2*d + 2 < s.size(); i++){
+		if(s[i] != a && s[i + d + 1] == b && s[i + 2*d + 2] != c){
+			std::cout << std::left << std::setw(51) << std::setfill(' ') << s << " contains the pattern (!" << a << ") ⋄^" << std::setw(2) << std::setfill(' ') << d << " (" << b << ") ⋄^" << std::setw(2) << std::setfill(' ') <<  d << " (!" << c << ") at position " << i << std::endl;
 			return;
 		}
 	}
@@ -56,103 +57,103 @@ h25['2'] = "2010210121021201210120102";
 h26['2'] = "20102101210212010210120102";
 
 
-std::cout << "The largest position should be at most 20" << std::endl;
+std::cout << "The largest position should be at most 20 (hence (20, h)-constructibility)" << std::endl;
+  
+// (!a) ⋄^16 (a) ⋄^16 (!a)                                   
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '0', '0', '0', 16);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '0', '0', '0', 16);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '1', '1', '1', 16);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '1', '1', '1', 16);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '2', '2', '2', 16);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '2', '2', '2', 16);
 
-// !a <-17-> a <-17-> !a                                      
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '0', '0', '0', 17);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '0', '0', '0', 17);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '1', '1', '1', 17);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '1', '1', '1', 17);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '2', '2', '2', 17);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '2', '2', '2', 17);
+// (!a) ⋄^16 (a) ⋄^16 (!(a-1))
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '0', '0', '2', 16);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '0', '0', '2', 16);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '1', '1', '0', 16);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '1', '1', '0', 16);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '2', '2', '1', 16);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '2', '2', '1', 16);
 
-// !a <-17-> a <-17-> !(a-1)
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '0', '0', '2', 17);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '0', '0', '2', 17);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '1', '1', '0', 17);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '1', '1', '0', 17);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '2', '2', '1', 17);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '2', '2', '1', 17);
+// (!a) ⋄^14 (a) ⋄^16 (!(a+1))
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '0', '0', '1', 14);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '0', '0', '1', 14);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '1', '1', '2', 14);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '1', '1', '2', 14);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '2', '2', '0', 14);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '2', '2', '0', 14);
 
-// !a <-15-> a <-15-> !(a+1)
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '0', '0', '1', 15);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '0', '0', '1', 15);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '1', '1', '2', 15);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '1', '1', '2', 15);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '2', '2', '0', 15);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '2', '2', '0', 15);
+// (!a) ⋄^12 (a) ⋄^12 (!a)
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '0', '0', '0', 12);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '0', '0', '0', 12);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '1', '1', '1', 12);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '1', '1', '1', 12);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '2', '2', '2', 12);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '2', '2', '2', 12);
 
-// !a <-13-> a <-13-> !a
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '0', '0', '0', 13);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '0', '0', '0', 13);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '1', '1', '1', 13);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '1', '1', '1', 13);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '2', '2', '2', 13);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '2', '2', '2', 13);
+// (!a) ⋄^12 (a-1) ⋄^12 (!a)
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '0', '2', '0', 12);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '0', '2', '0', 12);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '1', '0', '1', 12);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '1', '0', '1', 12);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '2', '1', '2', 12);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '2', '1', '2', 12);
 
-// !a <-13-> a-1 <-13-> !a
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '0', '2', '0', 13);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '0', '2', '0', 13);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '1', '0', '1', 13);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '1', '0', '1', 13);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '2', '1', '2', 13);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '2', '1', '2', 13);
+// (!a) ⋄^12 (a+1) ⋄^12 (!(a - 1))
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '0', '1', '2', 12);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '0', '1', '2', 12);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '1', '2', '0', 12);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '1', '2', '0', 12);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '2', '0', '1', 12);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '2', '0', '1', 12);
 
-// !a <-13-> a+1 <-13-> !(a-1)
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '0', '1', '2', 13);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '0', '1', '2', 13);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '1', '2', '0', 13);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '1', '2', '0', 13);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '2', '0', '1', 13);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '2', '0', '1', 13);
+// (!a) ⋄^10 (a+1) ⋄^10 (!a)
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '0', '1', '0', 10);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '0', '1', '0', 10);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '1', '2', '1', 10);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '1', '2', '1', 10);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '2', '0', '2', 10);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '2', '0', '2', 10);
 
-// !a <-11-> a+1<-11-> !a
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '0', '1', '0', 11);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '0', '1', '0', 11);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '1', '2', '1', 11);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '1', '2', '1', 11);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '2', '0', '2', 11);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '2', '0', '2', 11);
+// (!a) ⋄^8 (a-1) ⋄^8 (!a)
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '0', '2', '0', 8);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '0', '2', '0', 8);
+has_motif_notA_delta_B_delta_notC(h25['0'] + h26['1'], '1', '0', '1', 8);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '1', '0', '1', 8);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '2', '1', '2', 8);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '2', '1', '2', 8);
 
-// !a <-9-> a-1 <-9-> !a
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '0', '2', '0', 9);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '0', '2', '0', 9);
-has_motif_notA_delta_B_delta_notC(h25['0'] + h26['1'], '1', '0', '1', 9);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '1', '0', '1', 9);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '2', '1', '2', 9);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '2', '1', '2', 9);
+// (!a) ⋄^8 (a+1) ⋄^9 (!(a-1))
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '0', '1', '2', 8);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '0', '1', '2', 8);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '1', '2', '0', 8);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '1', '2', '0', 8);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '2', '0', '1', 8);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '2', '0', '1', 8);
 
-// !a <-9-> a+1 <-9-> !(a-1)
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '0', '1', '2', 9);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '0', '1', '2', 9);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '1', '2', '0', 9);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '1', '2', '0', 9);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '2', '0', '1', 9);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '2', '0', '1', 9);
+// (!a) ⋄^6 (a-1) ⋄^6 (!(a+1))
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '0', '2', '1', 6);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '0', '2', '1', 6);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '1', '0', '2', 6);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '1', '0', '2', 6);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '2', '1', '0', 6);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '2', '1', '0', 6);
 
-// !a <-7-> a-1 <-7-> !(a+1)
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '0', '2', '1', 7);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '0', '2', '1', 7);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '1', '0', '2', 7);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '1', '0', '2', 7);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '2', '1', '0', 7);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '2', '1', '0', 7);
+// (!a) ⋄^0 (a-1) ⋄^0 (!a)
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '0', '2', '0', 0);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '0', '2', '0', 0);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '1', '0', '1', 0);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '1', '0', '1', 0);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '2', '1', '2', 0);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '2', '1', '2', 0);
 
-// !a <-1-> a-1 <-1-> !a
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '0', '2', '0', 1);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '0', '2', '0', 1);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '1', '0', '1', 1);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '1', '0', '1', 1);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '2', '1', '2', 1);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '2', '1', '2', 1);
-
-// !a <-1-> a+1 <-1-> !a
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '0', '1', '0', 1);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '0', '1', '0', 1);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '1', '2', '1', 1);
-has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '1', '2', '1', 1);
-has_motif_notA_delta_B_delta_notC(h23['0'] + h26['1'], '2', '0', '2', 1);
-has_motif_notA_delta_B_delta_notC(h23['0'] + h26['2'], '2', '0', '2', 1);
+// (!a) ⋄^0 (a+1) ⋄^0 (!a)
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '0', '1', '0', 0);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '0', '1', '0', 0);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['1'], '1', '2', '1', 0);
+has_motif_notA_delta_B_delta_notC(h24['0'] + h26['2'], '1', '2', '1', 0);
+has_motif_notA_delta_B_delta_notC(h23['0'] + h26['1'], '2', '0', '2', 0);
+has_motif_notA_delta_B_delta_notC(h23['0'] + h26['2'], '2', '0', '2', 0);
 
 
 	return 0;
