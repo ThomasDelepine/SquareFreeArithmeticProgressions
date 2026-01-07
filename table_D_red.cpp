@@ -1,17 +1,3 @@
-
-
-/*
-
-Code to assert that for a fiven pair of integers (p, q), there is no infinite ternary square-free word that is square-free modulo p and q 
-
-compilation : g++ -O3 -march=native -flto -g -o table_D_red.o table_D_red.cpp
-execution   : ./table_D_red.o
-
-
-*/
-
-
-
 #include <iostream>
 #include <algorithm>
 #include <string.h>
@@ -26,6 +12,15 @@ execution   : ./table_D_red.o
 
 #define SIZE 1000000
 
+/*
+
+Code to assert that for a fiven pair of integers (p, q), there is no infinite ternary square-free word that is square-free modulo p and q 
+
+compilation : g++ -O3 -march=native -flto -g -o table_D_red.o table_D_red.cpp
+execution   : ./table_D_red.o
+
+
+*/
 
 bool checkSquareFreeAtEnd(const int (&s)[SIZE], const int& size){
     /*
