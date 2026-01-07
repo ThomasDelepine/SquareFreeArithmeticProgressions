@@ -68,7 +68,7 @@ std::set<std::string>factors(const int size_for_factors){
 	return res;
 }
 
-int max_distance_between_patterns(const char a, const char b, int d, std::set<std::string>& factors){
+int max_distance_between_patterns(const char a, const char b, int d, const std::set<std::string>& factors){
 	/*
 	Returns the maximum distance between the two left-most patterns (a)⋄^d(b) amongst every factor in factors
 
