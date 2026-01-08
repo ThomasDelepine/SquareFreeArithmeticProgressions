@@ -46,7 +46,7 @@ std::vector<std::string> all_squares_of_size_4(){
 	return res;
 }
 
-void all_factors(const std::string& s, const int size, std::set<std::string>& acc){
+void factors_of_s(const std::string& s, const int size, std::set<std::string>& acc){
 	/*
 	stores every factor of s of length size in acc
 	*/
@@ -59,11 +59,14 @@ void all_factors(const std::string& s, const int size, std::set<std::string>& ac
 	}
 }
 
-std::set<std::string>factors(const int size_for_factors){
+std::set<std::string>factors(const int size){
+	/*
+	Generate all factors of size size of h26(t) for every square-free word t of size 4
+	*/
 	const std::vector<std::string> h26 = {"01210212021020121021201210", "12021020102101202102012021", "20102101210212010210120102"};
 	std::set<std::string> res;
 	for(const std::string s : all_squares_of_size_4()){
-		all_factors(h26[s[0] - '0'] + h26[s[1] - '0'] + h26[s[2] - '0'] + h26[s[3] - '0'], size_for_factors, res);
+		factors_of_s(h26[s[0] - '0'] + h26[s[1] - '0'] + h26[s[2] - '0'] + h26[s[3] - '0'], size, res);
 	}
 	return res;
 }
