@@ -2,11 +2,14 @@
 #include <iomanip>
 #include <string.h>
 #include <vector>
-#include "pattern.hpp"
+#include "utility.hpp"
 
 /*
 
 Code to assert that the pattern P = (!a)⋄^d(b)⋄^d(!c) is 27-recurrent for d in {0..17} and P not in Pbad 
+
+To do so, we generate all possible factors of length 70 of h(t) for every infinite ternary square-free word t
+and we check that each pattern occurs at position at most 27 in every factor
 
 compilation : g++ -O3 -march=native -flto -g -o lemma_B_2.o lemma_B_2.cpp
 execution   : ./lemma_B_2.o
@@ -34,58 +37,26 @@ public:
     }
 };
 
-char p(const char a){
-	if( a == '2') return '0';
-	return a+1;
-}
-char m(const char a){
-	if(a == '0')
-		return '2';
-	return a-1;
-}
-
-bool not_in_Pbad(const char a, const char b, const char c, const int distance){
-	if(distance == 16 && a == b && b == c)
-		return false;
-	if(distance == 16 && a == b && c == m(a))
-		return false;
-	if(distance == 14 && a == b && c == p(a))
-		return false;
-	if(distance == 12 && a == b && b == c)
-		return false;
-	if(distance == 12 && b == m(a) && c == a)
-		return false;
-	if(distance == 12 && b == p(a) && c == m(a))
-		return false;
-	if(distance == 10 && b == p(a) && c == a)
-		return false;
-	if(distance == 8 && b == m(a) && c == a)
-		return false;
-	if(distance == 8 && b == p(a) && c == m(a))
-		return false;
-	if(distance == 6 && b == m(a) && c == p(a))
-		return false;
-	if(distance == 0 && b == m(a) && c == a)
-		return false;
-	if(distance == 0 && b == p(a) && c == a)
-		return false; 
-	return true;
-}
-
 int main() {
 	std::cout << "The largest distance should be 27 (hence (27,h)-recurrence)" << std::endl;
 	std::set<std::string> factors = getFactors(70);
+	int max = 0;
 	for(char a : {'0', '1', '2'}){
 		for(char b : {'0', '1', '2'}){
 			for(char c : {'0', '1', '2'}){
 				for(int d = 0; d <= 17; d++){
-					if(not_in_Pbad(a, b, c, d)){
+					if(!inPBad(t(a, b, c, d))){
  						Pattern_na_d_b_d_nc pat(a, b, c, d);
                         int dist = pat.max_distance_before_pattern(factors);
-                        std::cout << std::left << "For the pattern "<<pat<< ", the largest distance is " << dist << std::endl;
+						if(dist == -1) std::cout << "The pattern " << pat << " does not occur" << std::endl;
+						else{
+							max = std::max(max, dist);
+							std::cout << "For the pattern "<<pat<< ", the largest distance is "<<dist<<std::endl;
+						}
 					}
 				}
 			}
 		}
 	}
+	std::cout << "the largest distance was " << max << std::endl;
 }	

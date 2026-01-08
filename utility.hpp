@@ -4,6 +4,8 @@
 #include <vector>
 #include <set>
 
+/* Functions to generate all factors */
+
 std::vector<std::string> all_square_free_words_of_size_4(){
 	std::vector<std::string> res;
 	for(const std::string a : {"0", "1", "2"}){
@@ -32,6 +34,8 @@ std::set<std::string> getFactors(const int size_for_factors){
 	}
 	return res;
 }
+
+/* Class Pattern */
 
 class Pattern{
 public:
@@ -66,3 +70,33 @@ public:
 		return largest;
 	}
 };
+
+/* Definition of PBad */
+
+std::tuple<char, char, char, int>t(char a, char b, char c, int d){return std::tuple<char, char, char, int>(a, b, c, d);}
+
+std::vector<std::tuple<char, char, char, int>> PBad = {	t('0', '0', '0', 16), t('1', '1', '1', 16), t('2', '2', '2', 16),  // (!a)⋄^16(a)⋄^16(!a)
+														t('0', '0', '2', 16), t('1', '1', '0', 16), t('2', '2', '1', 16),  // (!a)⋄^16(a)⋄^16(!(a-1))
+														t('0', '0', '1', 14), t('1', '1', '2', 14), t('2', '2', '0', 14),  // (!a)⋄^14(a)⋄^14(!(a+1))
+
+														t('0', '0', '0', 12), t('1', '1', '1', 12), t('2', '2', '2', 12),  // (!a)⋄^12(a)⋄^12(!a)
+														t('0', '2', '0', 12), t('1', '0', '1', 12), t('2', '1', '2', 12),  // (!a)⋄^12(a-1)⋄^12(!a)
+														t('0', '1', '2', 12), t('1', '2', '0', 12), t('2', '0', '1', 12),  // (!a)⋄^12(a+1)⋄^12(!(a-1))
+
+														t('0', '1', '0', 10), t('1', '2', '1', 10), t('2', '0', '2', 10),  // (!a)⋄^10(a+1)⋄^10(!a)
+														t('0', '2', '0', 8), t('1', '0', '1', 8), t('2', '1', '2', 8),  // (!a)⋄^8(a-1)⋄^8(!a)
+														t('0', '1', '2', 8), t('1', '2', '0', 8), t('2', '0', '1', 8),  // (!a)⋄^8(a+1)⋄^8(!(a-1))
+
+														t('0', '2', '1', 6), t('1', '0', '2', 6), t('2', '1', '0', 6),  // (!a)⋄^6(a-1)⋄^6(!(a+1))
+														t('0', '2', '0', 0), t('1', '0', '1', 0), t('2', '1', '2', 0),  // (!a)⋄^0(a-1)⋄^0(!a)
+														t('0', '1', '0', 0), t('1', '2', '1', 0), t('2', '0', '2', 0),  // (!a)⋄^0(a+1)⋄^0(!a)
+													  };
+
+bool inPBad(const std::tuple<char, char, char, int>& t){
+	for(const auto e : PBad){
+		if(e == t){
+			return true;
+		}
+	}
+	return false;
+}
