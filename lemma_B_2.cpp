@@ -35,18 +35,13 @@ public:
 };
 
 char p(const char a){
-	if(a == '0')
-		return '1';
-	if(a == '1')
-		return '2';
-	return '0';
+	if( a == '2') return '0';
+	return a+1;
 }
 char m(const char a){
 	if(a == '0')
 		return '2';
-	if(a == '1')
-		return '0';
-	return '1';
+	return a-1;
 }
 
 bool not_in_Pbad(const char a, const char b, const char c, const int distance){
