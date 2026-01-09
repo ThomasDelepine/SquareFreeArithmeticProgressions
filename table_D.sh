@@ -22,7 +22,7 @@ pairs=(
     "4 10"      
     "4 14"  
     "5 10"    
-    "6 7" 
+    "6 7" # takes a few seconds but terminates
     "6 9"
     "6 12" 
     "7 14"
@@ -36,7 +36,7 @@ pairs=(
 
 for ((i=3; i<=19; i++)); do
   for ((j=i+1; j<=20; j++)); do
-    if (( i != 5 && j != 8 )); then
+    if (( i != 5 || j != 8 )); then # We do not consider the pair (5, 8)
       if printf '%s\n' "${pairs[@]}" | grep -qx "$i $j"; then
         ./table_D_red.o "$i" "$j"
       else

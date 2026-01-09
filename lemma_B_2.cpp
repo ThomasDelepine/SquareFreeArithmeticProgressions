@@ -45,10 +45,13 @@ int main() {
 		for(char b : {'0', '1', '2'}){
 			for(char c : {'0', '1', '2'}){
 				for(int d = 0; d <= 17; d++){
-					if(!inPBad(t(a, b, c, d))){
+					if(!inPBad(t(a, b, c, d))){ // Here, we do not want to test the patterns in PBad
  						Pattern_na_d_b_d_nc pat(a, b, c, d);
                         int dist = pat.max_distance_before_pattern(factors);
-						if(dist == -1) std::cout << "The pattern " << pat << " does not occur" << std::endl;
+						if(dist == -1){ 
+							std::cout << "The pattern " << pat << " does not occur" << std::endl;
+							return -1;
+						}
 						else{
 							max = std::max(max, dist);
 							std::cout << "For the pattern "<<pat<< ", the largest distance is "<<dist<<std::endl;

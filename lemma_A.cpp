@@ -62,7 +62,10 @@ int main() {
 			if(a != b){
                 Pattern_a_d_b pat(a, b, 0);
 				int dist = pat.max_distance_before_pattern(factors);
-				if(dist == -1) std::cout << "The pattern " << pat << " does not occur" << std::endl;
+				if(dist == -1){ 
+					std::cout << "The pattern " << pat << " does not occur" << std::endl;
+					return -1;
+				}
 				else{
 					max = std::max(max, dist);
 					std::cout << "For the pattern "<<pat<< ", the largest distance is "<<dist<<std::endl;

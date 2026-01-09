@@ -7,7 +7,7 @@
 
 /*
 
-Code to assert that the bad patterns are 20-constructible. To do so, we explicitely provide the construction
+Code to assert that the bad patterns are 13-constructible. To do so, we explicitely provide the construction
 
 To do so, for every pattern P in PBad and for every square-free word w of length 2, find find the best possible guiding sequence.
 
@@ -44,25 +44,23 @@ int main(){
 	h[26] = {"01210212021020121021201210", "12021020102101202102012021", "20102101210212010210120102"};
 
 
-	std::cout << "The largest position should be at most 20 (hence (20, h)-constructibility)" << std::endl;
+	std::cout << "The largest position should be at most 13 (hence (13, h)-constructibility)" << std::endl;
 	int constructibilityBound = 0;
 	// For every pattern in PBad :
 	for(const auto & t : PBad){
 		Pattern_na_d_b_d_nc pat(std::get<0>(t), std::get<1>(t), std::get<2>(t), std::get<3>(t));
 		// for every square-free word of length 2
 		for(const auto & w : {"01", "02", "10", "12", "20", "21"}){
-			int min = -1; // best "constructibility"
-			int mings1, mings2 = 23;
+			int min = -1; // best constructibility bound yet for pat and w
+			int mings1, mings2 = 23; // best guiding sequence yet
 			for(const auto gs1 : {23, 24, 25, 26}){
 				for(const auto gs2 : {23, 24, 25, 26}){
 					int tmp = pat.firstOccurrence(h[gs1][w[0] - '0'] + h[gs2][w[1] - '0']);
-					// If gs1gs2 is a guiding sequence construction the pattern
-					if(tmp != -1){
-						if(tmp < min || min == -1){
-							min = tmp;
-							mings1 = gs1;
-							mings2 = gs2;
-						}
+					// If gs1, gs2 is a better guiding sequence constructing pat
+					if(tmp != -1 && (tmp < min || min == -1)){
+						min = tmp;
+						mings1 = gs1;
+						mings2 = gs2;
 					}
 				}
 			}
