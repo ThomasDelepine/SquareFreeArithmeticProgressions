@@ -9,6 +9,8 @@
 
 Code to assert that the bad patterns are 20-constructible. To do so, we explicitely provide the construction
 
+To do so, for every pattern P in PBad and for every square-free word w of length 2, find find the best possible guiding sequence.
+
 compilation : g++ -O3 -march=native -flto -g -o lemma_C.o lemma_C.cpp
 execution   : ./lemma_C.o
 
@@ -44,23 +46,28 @@ int main(){
 
 	std::cout << "The largest position should be at most 20 (hence (20, h)-constructibility)" << std::endl;
 
-	/* à relire !!!!! + si ok, commenter mieux*/
-
 	// For every pattern in PBad :
 	for(const auto t : PBad){
 		Pattern_na_d_b_d_nc pat(std::get<0>(t), std::get<1>(t), std::get<2>(t), std::get<3>(t));
 		// for every square-free word of length 2
 		for(const auto w : {"01", "02", "10", "12", "20", "21"}){
 			int min = 10000; // best "constructibility"
+			int mings1, mings2 = 23;
 			for(const auto gs1 : {23, 24, 25, 26}){
 				for(const auto gs2 : {23, 24, 25, 26}){
 					int tmp = pat.firstOccurrence(h[gs1][w[0] - '0'] + h[gs2][w[1] - '0']);
+					// If gs1gs2 is a guiding sequence construction the pattern
 					if(tmp != -1){
+						if(tmp < min){
+							min = tmp;
+							mings1 = gs1;
+							mings2 = gs2;
+						}
 						min = std::min(min, tmp);
 					}
 				}
 			}
-			std::cout << min << std::endl;
+			std::cout << "For the word " << w << ", and the pattern " << pat << ", the best guiding sequence is {" << mings1 << ", " << mings2 << "}, and the pattern occurs at position " << min << " in" << " " << h[mings1][w[0] - '0'] + h[mings2][w[1] - '0'] << std::endl;
 		}
 	}
 	return 0;
