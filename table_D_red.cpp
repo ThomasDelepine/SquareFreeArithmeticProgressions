@@ -14,7 +14,10 @@
 
 /*
 
-Code to assert that for a fiven pair of integers (p, q), there is no infinite ternary square-free word that is square-free modulo p and q 
+Code to assert that for a given pair of integers (p, q), there is no infinite ternary square-free word that is square-free modulo p and q 
+
+To do so, either a direct argument asserts that no such word exists or we try using a backtracking algorithm to produce an infinite such word.
+If the code terminates, then so infinite ternary square-free word that is square-free modulo p and q exists
 
 compilation : g++ -O3 -march=native -flto -g -o table_D_red.o table_D_red.cpp
 execution   : ./table_D_red.o
@@ -115,7 +118,6 @@ int main(int argc, char* argv[]) {
     }
     int p = std::stoi(argv[1]);
     int q = std::stoi(argv[2]);
-    //std::cout << "The search for p = " << p << ", q = " << q << " started" << std::endl;
     std::cout << "Search for an infinite ternary square-free word, square-free modulo " << p << " and modulo " << q << ": ";
     std::cout.flush();
     bool flag = no_infinite_square_free_word_mod_1_p_q(p, q);

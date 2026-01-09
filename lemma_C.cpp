@@ -7,9 +7,9 @@
 
 /*
 
-Code to assert that the bad patterns are 13-constructible. To do so, we explicitely provide the construction
+Code to assert that the bad patterns are (13, h)-constructible. To do so, we explicitely provide the construction
 
-To do so, for every pattern P in PBad and for every square-free word w of length 2, find find the best possible guiding sequence.
+To do so, for every pattern P in PBad and for every square-free word w of length 2, we find the best possible guiding sequence.
 
 compilation : g++ -O3 -march=native -flto -g -o lemma_C.o lemma_C.cpp
 execution   : ./lemma_C.o
