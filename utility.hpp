@@ -73,7 +73,7 @@ public:
 
 /* Definition of PBad */
 
-std::tuple<char, char, char, int>t(char a, char b, char c, int d){return std::tuple<char, char, char, int>(a, b, c, d);}
+std::tuple<char, char, char, int> t(char a, char b, char c, int d){return std::tuple<char, char, char, int>(a, b, c, d);}
 
 std::vector<std::tuple<char, char, char, int>> PBad = {	t('0', '0', '0', 16), t('1', '1', '1', 16), t('2', '2', '2', 16),  // (!a)⋄^16(a)⋄^16(!a)
 														t('0', '0', '2', 16), t('1', '1', '0', 16), t('2', '2', '1', 16),  // (!a)⋄^16(a)⋄^16(!(a-1))

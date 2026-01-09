@@ -54,7 +54,7 @@ int main() {
 			}
 		}
 	}
-	std::cout << "the largest distance was " << max << "\n" << std::endl;
+	std::cout << "the largest distance was " << max << std::endl << std::endl;
 	std::cout << "The largest distance should be 12 (hence (12,h)-recurrence)" << std::endl;
 	max = 0;
 	for(char a : {'0', '1', '2'}){
@@ -65,7 +65,7 @@ int main() {
 				if(dist == -1) std::cout << "The pattern " << pat << " does not occur" << std::endl;
 				else{
 					max = std::max(max, dist);
-					 std::cout << "For the pattern "<<pat<< ", the largest distance is "<<dist<<std::endl;
+					std::cout << "For the pattern "<<pat<< ", the largest distance is "<<dist<<std::endl;
 				}
 			}
 		}
