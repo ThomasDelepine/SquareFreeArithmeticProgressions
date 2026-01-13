@@ -2,8 +2,8 @@
 
 
 # compilation
-g++ -O3 -march=native -flto -g -o table_D_red.o table_D_red.cpp
-gcc -O3 -Wno-unused-result -o table_D_blue.o table_D_blue.c
+g++ -O3 -march=native -o table_D_red.o table_D_red.cpp
+gcc -O3 -o table_D_blue.o table_D_blue.c
 
 
 # Array of pairs

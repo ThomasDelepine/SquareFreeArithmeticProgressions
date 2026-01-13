@@ -6,12 +6,12 @@
 
 /*
 
-Code to assert that the pattern P = (!a)⋄^d(b)⋄^d(!c) is (27, h)-recurrent for d in {0..17} and P not in Pbad 
+Code that verifies that the patterns P = (!a)⋄^d(b)⋄^d(!c) are (27, h)-recurrent for d in {0..17} and P not in Pbad 
 
 To do so, we generate all possible factors of length 70 of h(t) for every infinite ternary square-free word t
 and we check that each pattern occurs at position at most 27 in every factor
 
-compilation : g++ -O3 -march=native -flto -g -o lemma_B_2.o lemma_B_2.cpp
+compilation : g++ -O3 -o lemma_B_2.o lemma_B_2.cpp
 execution   : ./lemma_B_2.o
 
 		h26(0) = 01210212021020121021201210
@@ -26,7 +26,7 @@ public:
     char c;
     int d;
     Pattern_na_d_b_d_nc(char a_, char b_, char c_, int d_): a(a_), b(b_), c(c_), d(d_){}
-    bool occursAtPosition(const std::string& s, int pos){
+    bool occursAtPosition(const std::string& s, size_t pos){
         if(pos + 2*d + 2 >= s.size())
             return false;
         return (s[pos] != a && s[pos + d + 1] == b && s[pos + 2*d + 2] != c);
@@ -38,7 +38,8 @@ public:
 };
 
 int main() {
-	std::cout << "The largest distance should be 27 (hence (27,h)-recurrence)" << std::endl;
+	std::cout << "Starting the verification that patterns P = (!a)⋄^d(b)⋄^d(!c) are (27,h)-recurrent for d in {0..17} and P not in PBad." << std::endl;
+	std::cout << "The largest distance should be 27 (hence (27,h)-recurrence)." << std::endl;
 	std::set<std::string> factors = getFactors(70);
 	int max = 0;
 	for(char a : {'0', '1', '2'}){
@@ -49,17 +50,17 @@ int main() {
  						Pattern_na_d_b_d_nc pat(a, b, c, d);
                         int dist = pat.max_distance_before_pattern(factors);
 						if(dist == -1){ 
-							std::cout << "The pattern " << pat << " does not occur" << std::endl;
+							std::cout << "The pattern " << pat << " does not occur." << std::endl;
 							return -1;
 						}
 						else{
 							max = std::max(max, dist);
-							std::cout << "For the pattern "<<pat<< ", the largest distance is "<<dist<<std::endl;
+							std::cout << "For the pattern "<<pat<< ", the largest distance is "<<dist<<"."<<std::endl;
 						}
 					}
 				}
 			}
 		}
 	}
-	std::cout << "the largest distance was " << max << std::endl;
+	std::cout << "The largest distance was " << max << "." << std::endl;
 }	

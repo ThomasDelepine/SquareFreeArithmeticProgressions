@@ -7,11 +7,11 @@
 
 /*
 
-Code to assert that the bad patterns are (13, h)-constructible. To do so, we explicitely provide the construction
+Code that verifies that the patterns from PBad are (13, h)-constructible. 
 
 To do so, for every pattern P in PBad and for every square-free word w of length 2, we find the best possible guiding sequence.
 
-compilation : g++ -O3 -march=native -flto -g -o lemma_C.o lemma_C.cpp
+compilation : g++ -O3 -o lemma_C.o lemma_C.cpp
 execution   : ./lemma_C.o
 
 
@@ -24,7 +24,7 @@ public:
     char c;
     int d;
     Pattern_na_d_b_d_nc(char a_, char b_, char c_, int d_): a(a_), b(b_), c(c_), d(d_){}
-    bool occursAtPosition(const std::string& s, int pos){
+    bool occursAtPosition(const std::string& s, size_t pos){
         if(pos + 2*d + 2 >= s.size())
             return false;
         return (s[pos] != a && s[pos + d + 1] == b && s[pos + 2*d + 2] != c);
@@ -43,7 +43,7 @@ int main(){
 	h[25] = {"0121021202102012021201210", "1202102010210120102012021", "2010210121021201210120102"};
 	h[26] = {"01210212021020121021201210", "12021020102101202102012021", "20102101210212010210120102"};
 
-
+	std::cout << "Starting the verification that patterns from PBad are (13,h)-constructible." << std::endl;
 	std::cout << "The largest position should be at most 13 (hence (13, h)-constructibility)" << std::endl;
 	int constructibilityBound = 0;
 	// For every pattern in PBad :
@@ -65,16 +65,17 @@ int main(){
 				}
 			}
 			if(min == -1){
-				std::cout << "Error: could not construct pattern " << pat << " with word " << w << std::endl;
-				return -1;
+				std::cout << "Error: could not construct pattern " << pat << " with word " << w << "." << std::endl;
+				return 1;
 			}
-			std::cout << "For the word " << w << ", and the pattern " << pat << ", the best guiding sequence is {" << mings1 << ", " << mings2 << "}, and the pattern occurs at position " << min << " in" << " " << h[mings1][w[0] - '0'] + h[mings2][w[1] - '0'] << std::endl;
+			std::cout << "For the word " << w << ", and the pattern " << pat << ", the best guiding sequence is {" 
+				<< mings1 << ", " << mings2 << "}, and the pattern occurs at position " << min << " in" << " " 
+				<< h[mings1][w[0] - '0'] + h[mings2][w[1] - '0'] << "." << std::endl;
 			if(min > constructibilityBound){
 				constructibilityBound = min;
 			}
 		}
 	}
 	std::cout << "Hence, all patterns in PBad are (" << constructibilityBound << ", h)-constructible." << std::endl;
-
 	return 0;
 }
