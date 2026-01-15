@@ -2,8 +2,9 @@
 
 
 # compilation
-g++ -O3 -march=native -o table_D_red.o table_D_red.cpp
-gcc -O3 -o table_D_blue.o table_D_blue.c
+g++ -O3 -o table_D_red.o table_D_red.cpp
+g++ -O3 -o table_D_blue.o table_D_blue.cpp
+##gcc -O3 -o table_D_blue.o table_D_blue.c
 
 
 # Array of pairs
@@ -41,6 +42,7 @@ for ((i=3; i<=19; i++)); do
         ./table_D_red.o "$i" "$j"
       else
         ./table_D_blue.o "$i" "$j"
+        sleep 1
       fi
     fi
   done

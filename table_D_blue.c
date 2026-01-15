@@ -66,7 +66,7 @@ int main(int ac, char **av){
  q = atoi(av[2]);
  if(p >= q) usage();
  ppcm = p*q/pgcd(p,q);
- sprintf(pair, "(%d,%d)\n", p, q);
+ sprintf(pair, "%d %d\n", p, q);
  in = fopen("table_D_morphisms.txt", "r");
  for(fgets(ch, 100, in); strcmp(pair, ch); fgets(ch, 100, in));
  fgets(ch, 80000, in);

@@ -3,74 +3,37 @@
 #include <iomanip>
 #include <algorithm>
 #include <string.h>
+#include "utility.hpp"
 
 
 /*
 
-Code that verifies that there exists a morphism that is square-free and square-free modulo p 
+Code that verifies that there exists a morphism that is square-free and whose subsequences congruent to alpha modulo p are also square-free
 
-To do so, we check that the solutions stored in table_E_morphisms. are valid
+To do so, we check that the solutions stored in table_E_morphisms.txt are valid
 
 compilation : g++ -O3 -o table_E.o table_E.cpp
 execution   : ./table_E.o
 
 */
 
-bool checkSquareFree(const std::string& s){
-    /*
-    verifies that s is square-free
-    */
-    for(size_t i = 0; i < s.size() - 1; i++){
-        for(size_t period = 1; 2*period+i <= s.size(); period++){
-            bool flag = false;
-            for(size_t j = i; j < i + period; j++){
-                if(s[j] != s[j + period]){
-                    flag = true;
-                    break;
-                }
-            }
-            if(!flag){
-                return false;
-            }
-        }
-    }
-    return true;
-}
 
-bool assertSquareFreeCircMorph(const std::string& h0){
-    std::string h1, h2;
-    for(const char e : h0){
+std::string pi3(const std::string& s){
+    std::string res = "";
+    for(const char e : s){
         if(e == '0'){
-            h1 = h1 + '1';
-            h2 = h2 + '2';
+            res = res + '1';
         }
         else if(e == '1'){
-            h1 = h1 + '2';
-            h2 = h2 + '0';
+            res = res + '2';
         }
         else{
-            h1 = h1 + '0';
-            h2 = h2 + '1';
+            res = res + '0';
         }
-    }
-    for(const std::string& s : {h0+h1+h2, h0+h1+h0, h0+h2+h0, h0+h2+h1}){
-        if(!checkSquareFree(s)){
-            return false;
-        }
-    }
-    return true;
-}
-
-std::string subsequence(const std::string& s, const int p, const int alpha){
-    /*
-    returns the subsequence congruent to alpha modulo p of s
-    */
-    std::string res = "";
-    for(size_t i = alpha; i < s.size(); i = i + p){
-        res = res + s[i];
     }
     return res;
 }
+    
 
 int main(int argc, char* argv[]){
     if(argc != 2){
@@ -81,7 +44,7 @@ int main(int argc, char* argv[]){
 
     // We read the morphism from table_E_morphisms.txt
     std::ifstream file("table_E_morphisms.txt");
-    std::string line, h0, h0p;
+    std::string line, h0, h1, h2, h0p, h1p, h2p;
     int pr=0, alpha;
     for (int lineNum = 1; std::getline(file, line); ++lineNum) {
             std::istringstream iss(line);
@@ -89,16 +52,20 @@ int main(int argc, char* argv[]){
             if(iss.fail()) continue;
             if(pr == p) break;
     }
-    if(p != pr){
+    if(pr != p){
         std::cout << "Usage 2 : ./table_E.cpp <p> (with p in {3,4,5,7,8,9,10,11,12,14,15,16,20,21,22})" << std::endl;
         return 1;
     }
 
+    h1 = pi3(h0);
+    h2 = pi3(h1);
     h0p = subsequence(h0, p, alpha);
+    h1p = pi3(h0p);
+    h2p = pi3(h1p);
 
     // and then we check that the morphism is valid
     std::cout << "check for h(0) = " << h0 << ":" << std::endl;; 
-    if(assertSquareFreeCircMorph(h0)){
+    if(assertSquareFreeUnifMorph(h0, h1, h2)){
         std::cout << "  The morphism is square-free." << std::endl;
     }
     else{
@@ -106,7 +73,7 @@ int main(int argc, char* argv[]){
     }
 
     std::cout << "check for s^a(h(0))<"<< p << "> = " << h0p << ":" << std::endl; 
-    if(assertSquareFreeCircMorph(h0p)){
+    if(assertSquareFreeUnifMorph(h0p, h1p, h2p)){
         std::cout << "  The morphism is square-free." << std::endl;
     }
     else{

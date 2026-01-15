@@ -100,3 +100,48 @@ bool inPBad(const std::tuple<char, char, char, int>& t){
 	}
 	return false;
 }
+
+/* Square-freeness Verification */
+
+bool checkSquareFree(const std::string& s){
+    /*
+    verifies that s is square-free
+    */
+    for(size_t i = 0; i < s.size() - 1; i++){
+        for(size_t period = 1; 2*period+i <= s.size(); period++){
+            bool flag = false;
+            for(size_t j = i; j < i + period; j++){
+                if(s[j] != s[j + period]){
+                    flag = true;
+                    break;
+                }
+            }
+            if(!flag){
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool assertSquareFreeUnifMorph(const std::string& h0, const std::string& h1, const std::string& h2){
+    for(const std::string& s : {h0+h1+h0, h0+h1+h2, h0+h2+h0, h0+h2+h1,
+								h1+h0+h1, h1+h0+h2, h1+h2+h0, h1+h2+h1,
+								h2+h0+h1, h2+h0+h2, h2+h1+h0, h2+h1+h2}){
+        if(!checkSquareFree(s)){
+            return false;
+        }
+    }
+    return true;
+}
+
+std::string subsequence(const std::string& s, const int p, const int alpha){
+    /*
+    returns the subsequence congruent to alpha modulo p of s
+    */
+    std::string res = "";
+    for(size_t i = alpha; i < s.size(); i = i + p){
+        res = res + s[i];
+    }
+    return res;
+}
