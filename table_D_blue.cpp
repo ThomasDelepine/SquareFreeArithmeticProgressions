@@ -1,14 +1,12 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
-#include <algorithm>
-#include <string.h>
 #include "utility.hpp"
 
 /*
 
-Code that verifies that there exists a morphism that is square-free, square-free modulo p and square-free modulo 
-for  all pairs (p, q) with p < q and (p, q) not in "3 4"       
+Code that verifies that there exists a morphism that is square-free, square-free modulo p and square-free modulo q
+for all pairs (p, q) with p < q and (p, q) not in      
     (3, 4) (3, 5) (3, 6) (3, 7) (3, 8) (3, 10)
     (4, 5) (4, 6) (4, 7) (4, 8) (4, 9) (4, 10) (4, 14) 
     (5, 10) 
@@ -50,8 +48,8 @@ int main(int argc, char* argv[]){
 
     // We read the morphism from table_D_morphisms.txt
     std::ifstream file("table_D_morphisms.txt");
-    std::string line, h0, h1, h2, h0p, h1p, h2p, h0q, h1q, h2q;
-    int pr=0, qr=0, alpha;
+    std::string line;
+    int pr=0, qr=0;
     for (int lineNum = 1; std::getline(file, line); ++lineNum) {
             std::istringstream iss(line);
             iss >> pr >> qr;
@@ -62,12 +60,11 @@ int main(int argc, char* argv[]){
         usage(1);
         return 1;
     }
-    else{
-        std::getline(file, h0);
-        std::getline(file, h1);
-        std::getline(file, h2);
-        std::cout << h0 << " \n" << h1 << " \n" << h2 << std::endl;
-    }
+
+    std::string h0, h1, h2, h0p, h1p, h2p, h0q, h1q, h2q;
+    std::getline(file, h0);
+    std::getline(file, h1);
+    std::getline(file, h2);
     h0p = subsequence(h0, p, 0);
     h0q = subsequence(h0, q, 0);
 
@@ -78,28 +75,28 @@ int main(int argc, char* argv[]){
     h2q = subsequence(h2, q, 0);
 
     // and then we check that the morphism is valid
-    std::cout << "check for h:" << std::endl;; 
+    std::cout << "Check for h:" << std::endl;; 
     if(assertSquareFreeUnifMorph(h0, h1, h2)){
-        std::cout << "  The morphism is square-free." << std::endl;
+        std::cout << "  The morphism h is square-free." << std::endl;
     }
     else{
-        std::cout << "  The morphism is not square-free." << std::endl;
+        std::cout << "  The morphism h is not square-free." << std::endl;
     }
 
-    std::cout << "check for h<"<< p << ">:" << std::endl; 
+    std::cout << "Check for h<"<< p << ">:" << std::endl; 
     if(assertSquareFreeUnifMorph(h0p, h1p, h2p)){
-        std::cout << "  The morphism is square-free." << std::endl;
+        std::cout << "  The morphism h<"<< p << "> is square-free." << std::endl;
     }
     else{
-        std::cout << "  The morphism is not square-free." << std::endl;
+        std::cout << "  The morphism h<"<< p << "> is not square-free." << std::endl;
     }
 
-    std::cout << "check for h<"<< q << ">:" << std::endl; 
+    std::cout << "Check for h<"<< q << ">:" << std::endl; 
     if(assertSquareFreeUnifMorph(h0q, h1q, h2q)){
-        std::cout << "  The morphism is square-free." << std::endl;
+        std::cout << "  The morphism h<"<< q << "> is square-free." << std::endl;
     }
     else{
-        std::cout << "  The morphism is not square-free." << std::endl;
+        std::cout << "  The morphism h<"<< q << "> is not square-free." << std::endl;
     }
     return 0;
 }

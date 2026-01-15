@@ -1,7 +1,6 @@
 #include <map>
 #include <iostream>
 #include <iomanip>
-#include <string.h>
 #include <vector>
 #include "utility.hpp"
 

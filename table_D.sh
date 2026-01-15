@@ -42,7 +42,6 @@ for ((i=3; i<=19; i++)); do
         ./table_D_red.o "$i" "$j"
       else
         ./table_D_blue.o "$i" "$j"
-        sleep 1
       fi
     fi
   done
