@@ -8,7 +8,7 @@
 Code that verifies that the patterns P = (!a)⋄^d(b)⋄^d(!c) are (27, h)-recurrent for d in {0..17} and P not in Pbad 
 
 To do so, we generate all possible factors of length 70 of h(t) for every infinite ternary square-free word t
-and we check that each pattern occurs at position at most 27 in every factor
+and we check that each pattern occurs at position at most 26 in every factor
 
 compilation : g++ -O3 -o lemma_B_2.o lemma_B_2.cpp
 execution   : ./lemma_B_2.o

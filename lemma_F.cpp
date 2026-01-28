@@ -10,8 +10,8 @@ Code that verifies that the pattern (a)⋄^3(b) is (10, h)-constructible and tha
 
 To do so, for every such pattern and for every square-free word w of length 2, we find the best possible guiding sequence.
 
-compilation : g++ -O3 -o test_lemma_10.o test_lemma_10.cpp
-execution   : ./test_lemma_10.o
+compilation : g++ -O3 -o lemma_F.o lemma_F.cpp
+execution   : ./lemma_F.o
 
 
 */

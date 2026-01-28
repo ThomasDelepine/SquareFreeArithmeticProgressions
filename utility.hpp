@@ -51,9 +51,7 @@ public:
     }
 	int max_distance_before_pattern(const std::set<std::string>& factors){
 		/*
-		Returns the maximum distance between the two left-most patterns (!a)⋄^d(!b) amongst every factor in factors
-
-		If one factor has at most 1 such pattern, we assert(false)
+		Returns the maximum distance before the pattern in the words from factors
 		*/
 		int largest = 0;
 		// Loop over all factors that we are interested in
