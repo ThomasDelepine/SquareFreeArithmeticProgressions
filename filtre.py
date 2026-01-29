@@ -37,15 +37,19 @@ mask_prop_21 = ((((p==3) & (q>=1080))|((p==4) & (q>=1360))|((p==5) & (q>=1300))|
 mask_prop_26 = (((p == 6) & (q >= 342)) |
                 ((q == 6) & (p >= 342)))
 
+# Tiling from Table 1 :
+
+mask_table_1 = ((p <= 20) & (q <= 20) & ((p != 5) | (p != 8) | (q != 5) | (q != 8)))
+
 # Create coordinate grids
 
-mask = (mask1 | mask2 | mask_thm_16 | mask_prop_19 | mask_prop_21 | mask_prop_26)
+mask = (mask1 | mask2 | mask_thm_16 | mask_prop_19 | mask_prop_21 | mask_prop_26 | mask_table_1)
 # Count unmasked points
 print(np.sum(~mask), " uncovered pairs.")
 
 # To keep just the pair of coprime integers
 
 mask_coprime = (np.gcd(p, q) > 1)
-mask = (mask1 | mask2 | mask_thm_16 | mask_prop_19 | mask_prop_21 | mask_prop_26 | mask_coprime)
+mask = (mask1 | mask2 | mask_thm_16 | mask_prop_19 | mask_prop_21 | mask_prop_26 | mask_coprime | mask_table_1)
 # Count unmasked points
 print(np.sum(~mask), " uncovered coprime pairs.")
