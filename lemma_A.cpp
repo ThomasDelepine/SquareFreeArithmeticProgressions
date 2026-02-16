@@ -5,8 +5,8 @@
 /*
 
 Code that verifies that
-	- the patterns ab are (12, h26)-recurrent for a != b
-	- the patterns (a)⋄^d(b) are (27, h26)-recurrent for any d in {1, 2, 4, 5, 6, 7, 8}, and
+	- the patterns ab are (12, h26)-recurrent for a != b, and
+	- the patterns (a)⋄^d(b) are (27, h26)-recurrent for any d in {1, 2, 4, 5, 6, 7, 8}
 	
 To do so, we generate all possible factors of length 40 of h(t) for every infinite ternary square-free word t
 and we check that each pattern occurs at position at most 12 (resp. 27) in every factor
