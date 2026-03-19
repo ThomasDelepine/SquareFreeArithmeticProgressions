@@ -56,7 +56,7 @@ This repository provides the C++ implementations used for computer assisted proo
     ```
     
 ### Table 2
-- [table_2.cpp](https://github.com/ThomasDelepine/SquareFreeArithmeticProgressions/blob/main/table_2git.cpp) Code that verifies that there exists a morphism that is square-free and whose subsequences congruent to $\alpha$ modulo $p$ are also square-free
+- [table_2.cpp](https://github.com/ThomasDelepine/SquareFreeArithmeticProgressions/blob/main/table_2.cpp) Code that verifies that there exists a morphism that is square-free and whose subsequences congruent to $\alpha$ modulo $p$ are also square-free
     ```sh
     g++ -O3 -o table_2.o table_2.cpp
     ./table_2.o <p> 
